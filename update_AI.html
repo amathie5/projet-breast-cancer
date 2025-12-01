@@ -1,0 +1,2388 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.8.25">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Group AI - Valentine Krafft, Tifanie Yazbeck, Hadrien Bischof, Audrey Mathieu">
+<meta name="dcterms.date" content="2025-11-17">
+
+<title>Investigating Risk Factors for Breast Cancer: Associations Between Breast Density, Prior History, and Key Patient Characteristics</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+  margin-bottom: 0em;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
+
+
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js" integrity="sha384-ZvpUoO/+PpLXR1lu4jmpXWu80pZlYUAfxl5NsBMWOEPSjUn/6Z/hRTt8+pR6L4N2" crossorigin="anonymous"></script><script src="update_AI_files/libs/clipboard/clipboard.min.js"></script>
+<script src="update_AI_files/libs/quarto-html/quarto.js" type="module"></script>
+<script src="update_AI_files/libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="update_AI_files/libs/quarto-html/axe/axe-check.js" type="module"></script>
+<script src="update_AI_files/libs/quarto-html/popper.min.js"></script>
+<script src="update_AI_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="update_AI_files/libs/quarto-html/anchor.min.js"></script>
+<link href="update_AI_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="update_AI_files/libs/quarto-html/quarto-syntax-highlighting-7b89279ff1a6dce999919e0e67d4d9ec.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="update_AI_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="update_AI_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="update_AI_files/libs/bootstrap/bootstrap-4d7f0bce1131f3e5f9547cd857cfbfc8.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script src="https://cdn.jsdelivr.net/npm/requirejs@2.3.6/require.min.js" integrity="sha384-c9c+LnTbwQ3aujuU7ULEPVvgLs+Fn6fJUvIGTsuu1ZcCf11fiEubah0ttpca4ntM sha384-6V1/AdqZRWk1KAlWbKBlGhN7VG4iE/yAZcO6NZPMF8od0vukrvr0tg4qY6NSrItx" crossorigin="anonymous"></script>
+
+<script type="application/javascript">define('jquery', [],function() {return window.jQuery;})</script>
+
+
+</head>
+
+<body class="quarto-light">
+
+<div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
+<div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+  <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of Contents</h2>
+   
+  <ul>
+  <li><a href="#introduction" id="toc-introduction" class="nav-link active" data-scroll-target="#introduction">1. Introduction</a>
+  <ul class="collapse">
+  <li><a href="#background-and-motivation" id="toc-background-and-motivation" class="nav-link" data-scroll-target="#background-and-motivation">1.1 Background and Motivation</a></li>
+  <li><a href="#project-objectives" id="toc-project-objectives" class="nav-link" data-scroll-target="#project-objectives">1.2 Project Objectives</a></li>
+  <li><a href="#research-questions" id="toc-research-questions" class="nav-link" data-scroll-target="#research-questions">1.3 Research Questions</a></li>
+  <li><a href="#related-work" id="toc-related-work" class="nav-link" data-scroll-target="#related-work">1.4 Related Work</a></li>
+  </ul></li>
+  <li><a href="#data" id="toc-data" class="nav-link" data-scroll-target="#data">2. Data</a>
+  <ul class="collapse">
+  <li><a href="#data-source" id="toc-data-source" class="nav-link" data-scroll-target="#data-source">2.1 Data Source</a></li>
+  <li><a href="#dataset-overview" id="toc-dataset-overview" class="nav-link" data-scroll-target="#dataset-overview">2.2 Dataset Overview</a></li>
+  <li><a href="#variables-description" id="toc-variables-description" class="nav-link" data-scroll-target="#variables-description">2.3 Variables Description</a></li>
+  <li><a href="#data-cleaning-and-preprocessing" id="toc-data-cleaning-and-preprocessing" class="nav-link" data-scroll-target="#data-cleaning-and-preprocessing">2.4 Data Cleaning and Preprocessing</a></li>
+  <li><a href="#challenges" id="toc-challenges" class="nav-link" data-scroll-target="#challenges">2.5 Challenges</a></li>
+  </ul></li>
+  <li><a href="#exploratory-data-analysis-eda" id="toc-exploratory-data-analysis-eda" class="nav-link" data-scroll-target="#exploratory-data-analysis-eda">3. Exploratory Data Analysis (EDA)</a>
+  <ul class="collapse">
+  <li><a href="#purpose" id="toc-purpose" class="nav-link" data-scroll-target="#purpose">3.1 Purpose</a></li>
+  <li><a href="#univariate-analysis" id="toc-univariate-analysis" class="nav-link" data-scroll-target="#univariate-analysis">3.2 Univariate Analysis</a></li>
+  <li><a href="#bivariate-analysis" id="toc-bivariate-analysis" class="nav-link" data-scroll-target="#bivariate-analysis">3.3 Bivariate Analysis</a></li>
+  <li><a href="#temporal-trends" id="toc-temporal-trends" class="nav-link" data-scroll-target="#temporal-trends">3.4 Temporal trends</a></li>
+  <li><a href="#correlation-analysis" id="toc-correlation-analysis" class="nav-link" data-scroll-target="#correlation-analysis">3.5 Correlation Analysis</a></li>
+  <li><a href="#key-findings-from-eda" id="toc-key-findings-from-eda" class="nav-link" data-scroll-target="#key-findings-from-eda">3.6 Key Findings from EDA</a></li>
+  </ul></li>
+  <li><a href="#analysis" id="toc-analysis" class="nav-link" data-scroll-target="#analysis">4. Analysis</a>
+  <ul class="collapse">
+  <li><a href="#statistical-methods-selected" id="toc-statistical-methods-selected" class="nav-link" data-scroll-target="#statistical-methods-selected">4.1 Statistical Methods selected</a></li>
+  <li><a href="#rationale-for-the-method-choice" id="toc-rationale-for-the-method-choice" class="nav-link" data-scroll-target="#rationale-for-the-method-choice">4.2. Rationale for the Method Choice</a></li>
+  <li><a href="#analytical-objectives" id="toc-analytical-objectives" class="nav-link" data-scroll-target="#analytical-objectives">4.3 Analytical Objectives</a></li>
+  </ul></li>
+  <li><a href="#conclusions" id="toc-conclusions" class="nav-link" data-scroll-target="#conclusions">5. Conclusions</a>
+  <ul class="collapse">
+  <li><a href="#next-steps" id="toc-next-steps" class="nav-link" data-scroll-target="#next-steps">5.1 Next Steps</a></li>
+  </ul></li>
+  </ul>
+</nav>
+</div>
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Investigating Risk Factors for Breast Cancer: Associations Between Breast Density, Prior History, and Key Patient Characteristics</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Group AI - Valentine Krafft, Tifanie Yazbeck, Hadrien Bischof, Audrey Mathieu </p>
+          </div>
+  </div>
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">November 17, 2025</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="introduction" class="level2">
+<h2 class="anchored" data-anchor-id="introduction">1. Introduction</h2>
+<section id="background-and-motivation" class="level3">
+<h3 class="anchored" data-anchor-id="background-and-motivation">1.1 Background and Motivation</h3>
+<p>Breast cancer is the most common cancer worldwide, with approximately 2.3 million new cases diagnosed in 2022, and remains the leading cause of cancer-related death among women (<span class="citation" data-cites="WHO2025">WHO (<a href="#ref-WHO2025" role="doc-biblioref">2025</a>)</span>). In Switzerland, the proportion of diagnoses among women under 40 years old is increasing (<span class="citation" data-cites="RTS2025">RTS (<a href="#ref-RTS2025" role="doc-biblioref">2025</a>)</span>). According to recent projections, its global incidence could increase by more than 40% by 2040, reaching nearly 3 million new cases per year (<span class="citation" data-cites="Arnold2022">Arnold et al. (<a href="#ref-Arnold2022" role="doc-biblioref">2022</a>)</span>).</p>
+<p>These figures highlight the magnitude of breast cancer as a major global public health concern. Early detection, particularly through mammography, plays a pivotal role in improving patient outcomes. However, breast cancer risk is not homogeneous: it varies according to a combination of demographic, clinical, and reproductive factors. Age, body mass index (BMI), menopausal status, family or personal history of breast cancer, hormone replacement therapy use, and breast density are among the most influential determinants shaping individual risk profiles (<span class="citation" data-cites="Obeagu2024">Obeagu &amp; Obeagu (<a href="#ref-Obeagu2024" role="doc-biblioref">2024</a>)</span>). Other lifestyle-related factors, such as alcohol consumption, smoking, and physical inactivity, are also known to infuence risk but are not captured in the dataset used for this study (<span class="citation" data-cites="Lukasiewicz2021">Lukasiewicz et al. (<a href="#ref-Lukasiewicz2021" role="doc-biblioref">2021</a>)</span>). Understanding how these factors interact is key to refining early detection strategies and improving risk stratification models.</p>
+<p>From a data science and actuarial perspective, exploring these associations provides valuable insights into risk modeling, population segmentation, and preventive health analytics. The ability to quantify risk factors and understand their combined effects supports better resource allocation and predictive assessment, both in public health and in insurance domains where early detection and prevention can substantially reduce long-term costs.</p>
+</section>
+<section id="project-objectives" class="level3">
+<h3 class="anchored" data-anchor-id="project-objectives">1.2 Project Objectives</h3>
+<p>The main goal of this project is to explore the relationships between demographic, clinical, and reproductive characteristics and two key indicators of breast cancer risk: <strong>breast density</strong> and <strong>prior breast cancer history</strong>.</p>
+<p>This project is exploratory in nature, combining statistical analysis and visualization techniques to reveal meaningful patterns and associations within a large population dataset. Specifically, the study aims to :</p>
+<ol type="1">
+<li>Conduct an exploratory data analysis (EDA) to characterize the distribution of key demographic, clinical, and reproductive characteristics among women undergoing mammography between 2005 and 2017.</li>
+<li>Investigate associations between breast density, a known intermediate marker of breast cancer risk, and prior breast cancer history to better understand their co-occurence and potential shared determinants.</li>
+<li>Explore interaction effects between key factors. For instance, between age and menopausal status, body mass index and breast density, or breast density and age.</li>
+<li>Analyze temporal trends to identify how the characteristics of women with high breast density or prior cancer have evolved over time.</li>
+<li>Use logistic regression modeling to quantify the relative contribution of each factor to both breast density and prior breast cancer, providing interpretable statistical insights.</li>
+</ol>
+<p>The findings aim to give a better understanding of how each factor influences disease patterns, thereby contributing to more accurate assessment of risk profiles in female populations.</p>
+</section>
+<section id="research-questions" class="level3">
+<h3 class="anchored" data-anchor-id="research-questions">1.3 Research Questions</h3>
+<p>To operationalize these objectives, the following research questions guide this study. Each question has been formulated to ensure a clear link between the dataset, the study population, and the overarching goal of understanding risk factors related to breast density and breast cancer history.</p>
+<p><strong>1. What is the prevalence of high breast density and prior breast cancer history in the study population ?</strong></p>
+<p>Understanding the prevalence provides essential baseline information about the study population. It allows us to quantify how common high breast density and previous breast cancer diagnoses are, which is critical for identifying at-risk subgroups and contextualizing subsequent analyses.</p>
+<p><strong>2. How do demographic, clinical, and reproductive characteristics influence breast density levels ?</strong></p>
+<p>Breast density is a known risk factor for breast cancer, but its distribution can vary based on age, hormonal status, reproductive history, and other clinical factors. Investigating these relationships helps identify which characteristics are most predictive of higher breast density and can inform targeted screening or prevention strategies.</p>
+<p><strong>3. Which factors show the strongest association with a previous breast cancer diagnosis, and how do they interact ?</strong></p>
+<p>Identifying the factors most strongly linked to prior breast cancer can help prioritize risk assessment and guide personalized patient management.</p>
+</section>
+<section id="related-work" class="level3">
+<h3 class="anchored" data-anchor-id="related-work">1.4 Related Work</h3>
+<p>Extensive research has established the role of demographic, reproductive, and clinical factors in shaping breast cancer risk. Classical epidemiological studies, such as those by <span class="citation" data-cites="PubMed17229950">Boyd et al. (<a href="#ref-PubMed17229950" role="doc-biblioref">2007</a>)</span> and <span class="citation" data-cites="PubMed16775176">McCormack &amp; Santos Silva (<a href="#ref-PubMed16775176" role="doc-biblioref">2006</a>)</span>, highlighted the strong association between breast density and breast cancer incidence, framing breast density as a key intermediate biomarker.</p>
+<p>From a methodological standpoint, recent studies have leveraged data-driven and actuarial approaches to model cancer risk. Machine learning frameworks (e.g., <span class="citation" data-cites="PubMed34767469">Yala et al. (<a href="#ref-PubMed34767469" role="doc-biblioref">2022</a>)</span>) have demonstrated improved prediction of breast cancer outcomes using large-scale imaging and clinical datasets. These approaches align with actuarial principles of risk classification and model-based decision-making, emphasizing the integration of statistical learning into preventive health analytics.</p>
+<p>The current study builds on this literature by focusing on exploratory and statistical modeling within an aggregated population dataset, emphasizing interpretability and visualization rather than prediction.</p>
+</section>
+</section>
+<section id="data" class="level2">
+<h2 class="anchored" data-anchor-id="data">2. Data</h2>
+<section id="data-source" class="level3">
+<h3 class="anchored" data-anchor-id="data-source">2.1 Data Source</h3>
+<p>The dataset used in this study originates from the <a href="https://www.bcsc-research.org/index.php/datasets/rfdataset" title="**Breast Cancer Surveillance Consortium (@BCSC)**">Breast Cancer Surveillance Consortium (BCSC)</a> (we accessed the dataset on october 2025).</p>
+<p>The BCSC proposes three datasets corresponding to different collection periods:</p>
+<pre><code>- 2005-2009
+- 2009-2013
+- 2013-2017</code></pre>
+<p>These datasets were merged to obtain a unified dataset covering mammography data from 2005 to 2017. In total, it compiles information from 6,788,436 mammograms collected across multiple screening sites in the United States. Each record represents an aggregated population subgroup, defined by a unique combination of demographic, clinical, and reproductive characteristics. All data were fully anonymized prior to publication and are limited to U.S. populations. After filtering and quality checks, the resulting dataset includes 421,880 aggregated observations, each corresponding to a specific demographic and clinical profile.</p>
+</section>
+<section id="dataset-overview" class="level3">
+<h3 class="anchored" data-anchor-id="dataset-overview">2.2 Dataset Overview</h3>
+<p>The <a href="#tbl-encoded-head" class="quarto-xref">Table&nbsp;1</a> is an extract of the initial merged dataset :</p>
+<div class="cell" data-execution_count="1">
+<details class="code-fold">
+<summary>Show code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> seaborn <span class="im">as</span> sns</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>pd.set_option(<span class="st">'display.max_columns'</span>, <span class="va">None</span>)</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>df_encoded <span class="op">=</span> pd.read_csv(<span class="vs">r'C:</span><span class="er">\</span><span class="vs">Users</span><span class="er">\</span><span class="vs">jeanv</span><span class="dv">\D</span><span class="vs">ocuments</span><span class="er">\</span><span class="vs">uni</span><span class="dv">\M</span><span class="vs">aster Management</span><span class="dv">\D</span><span class="vs">ata Science for Management</span><span class="er">\</span><span class="vs">Projet</span><span class="er">\</span><span class="vs">Report</span><span class="dv">\d</span><span class="vs">ata</span><span class="dv">\d</span><span class="vs">f_encoded</span><span class="dv">.</span><span class="vs">csv'</span>)</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> df_encoded.copy()</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a><span class="co">#Displaying the head of the dataset</span></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>display(df_encoded.head())</span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a><span class="co"># Number of variables (columns)</span></span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>num_variables <span class="op">=</span> df_encoded.shape[<span class="dv">1</span>]</span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a><span class="co"># Number of observations (lines)</span></span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>num_observations <span class="op">=</span> df_encoded.shape[<span class="dv">0</span>]</span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a><span class="co"># Total number of values</span></span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a>total_values <span class="op">=</span> df_encoded.size</span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">'number of variables = '</span>, num_variables)</span>
+<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">'number of observations = '</span>, num_observations)</span>
+<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">'number of values = '</span>, total_values)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>number of variables =  13
+number of observations =  1522340
+number of values =  19790420</code></pre>
+</div>
+<div id="tbl-encoded-head" class="cell quarto-float quarto-figure quarto-figure-center anchored" data-execution_count="1">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-encoded-head-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Table&nbsp;1: First rows of the initial dataset
+</figcaption>
+<div aria-describedby="tbl-encoded-head-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="cell-output cell-output-display">
+<div>
+
+
+<table class="dataframe do-not-create-environment cell caption-top table table-sm table-striped small" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">year</th>
+<th data-quarto-table-cell-role="th">age_group_5_years</th>
+<th data-quarto-table-cell-role="th">race_eth</th>
+<th data-quarto-table-cell-role="th">first_degree_hx</th>
+<th data-quarto-table-cell-role="th">age_menarche</th>
+<th data-quarto-table-cell-role="th">age_first_birth</th>
+<th data-quarto-table-cell-role="th">BIRADS_breast_density</th>
+<th data-quarto-table-cell-role="th">current_hrt</th>
+<th data-quarto-table-cell-role="th">menopaus</th>
+<th data-quarto-table-cell-role="th">bmi_group</th>
+<th data-quarto-table-cell-role="th">biophx</th>
+<th data-quarto-table-cell-role="th">breast_cancer_history</th>
+<th data-quarto-table-cell-role="th">count</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">0</th>
+<td>2005</td>
+<td>1</td>
+<td>1</td>
+<td>0</td>
+<td>1</td>
+<td>0</td>
+<td>2</td>
+<td>0</td>
+<td>1</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">1</th>
+<td>2005</td>
+<td>1</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td>9</td>
+<td>4</td>
+<td>0</td>
+<td>1</td>
+<td>9</td>
+<td>9</td>
+<td>9</td>
+<td>1</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">2</th>
+<td>2005</td>
+<td>1</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td>9</td>
+<td>4</td>
+<td>0</td>
+<td>1</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">3</th>
+<td>2005</td>
+<td>1</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td>4</td>
+<td>2</td>
+<td>0</td>
+<td>1</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">4</th>
+<td>2005</td>
+<td>1</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td>2</td>
+<td>3</td>
+<td>0</td>
+<td>1</td>
+<td>9</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+</figure>
+</div>
+</div>
+<p>The initial dataset contains a total of 13 variables and of 1,522,340 observations, for a total of 19,790,420 values.</p>
+<p>As we can see in <a href="#tbl-initial-missing" class="quarto-xref">Table&nbsp;2</a>, there are no missing variables in our dataset :</p>
+<div class="cell" data-execution_count="2">
+<details class="code-fold">
+<summary>Show code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>display(df_encoded.isnull().<span class="bu">sum</span>())</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div id="tbl-initial-missing" class="cell quarto-float quarto-figure quarto-figure-center anchored" data-execution_count="2">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-initial-missing-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Table&nbsp;2: Number of missing values in the initial dataset
+</figcaption>
+<div aria-describedby="tbl-initial-missing-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="cell-output cell-output-display">
+<pre><code>year                     0
+age_group_5_years        0
+race_eth                 0
+first_degree_hx          0
+age_menarche             0
+age_first_birth          0
+BIRADS_breast_density    0
+current_hrt              0
+menopaus                 0
+bmi_group                0
+biophx                   0
+breast_cancer_history    0
+count                    0
+dtype: int64</code></pre>
+</div>
+</div>
+</figure>
+</div>
+</div>
+<p><a href="#tbl-initial-types" class="quarto-xref">Table&nbsp;3</a> indicates what are the types of our variables :</p>
+<div class="cell" data-execution_count="3">
+<details class="code-fold">
+<summary>Show code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>display(df_encoded.dtypes)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div id="tbl-initial-types" class="cell quarto-float quarto-figure quarto-figure-center anchored" data-execution_count="3">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-initial-types-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Table&nbsp;3: Initial dataset variables types
+</figcaption>
+<div aria-describedby="tbl-initial-types-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="cell-output cell-output-display">
+<pre><code>year                     int64
+age_group_5_years        int64
+race_eth                 int64
+first_degree_hx          int64
+age_menarche             int64
+age_first_birth          int64
+BIRADS_breast_density    int64
+current_hrt              int64
+menopaus                 int64
+bmi_group                int64
+biophx                   int64
+breast_cancer_history    int64
+count                    int64
+dtype: object</code></pre>
+</div>
+</div>
+</figure>
+</div>
+</div>
+<p>The dataset is entirely aggregated, meaning that each row corresponds to the number of women sharing a specific combination of these attributes rather than individual-level observations.</p>
+</section>
+<section id="variables-description" class="level3">
+<h3 class="anchored" data-anchor-id="variables-description">2.3 Variables Description</h3>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 45%">
+<col style="width: 54%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Variable</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>year</code></td>
+<td>Year of mammogram (2005–2017)</td>
+</tr>
+<tr class="even">
+<td><code>age_group_5_years</code></td>
+<td>Age in 5-year intervals</td>
+</tr>
+<tr class="odd">
+<td><code>race_eth</code></td>
+<td>Race/ethnicity</td>
+</tr>
+<tr class="even">
+<td><code>bmi_group</code></td>
+<td>BMI categories</td>
+</tr>
+<tr class="odd">
+<td><code>menopaus</code></td>
+<td>Menopausal status (pre-, post-, surgical)</td>
+</tr>
+<tr class="even">
+<td><code>current_hrt</code></td>
+<td>Current hormone replacement therapy use</td>
+</tr>
+<tr class="odd">
+<td><code>first_degree_hx</code></td>
+<td>Family history of breast cancer</td>
+</tr>
+<tr class="even">
+<td><code>age_menarche</code></td>
+<td>Age at first menstruation</td>
+</tr>
+<tr class="odd">
+<td><code>age_first_birth</code></td>
+<td>Age at first birth</td>
+</tr>
+<tr class="even">
+<td><code>BIRADS_breast_density</code></td>
+<td>BI-RADS breast density classification (1–4)</td>
+</tr>
+<tr class="odd">
+<td><code>breast_cancer_history</code></td>
+<td>Prior breast cancer diagnosis (yes/no)</td>
+</tr>
+<tr class="even">
+<td><code>count</code></td>
+<td>Number of women in this profile</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="data-cleaning-and-preprocessing" class="level3">
+<h3 class="anchored" data-anchor-id="data-cleaning-and-preprocessing">2.4 Data Cleaning and Preprocessing</h3>
+<p>The preprocessing stage ensured that the dataset was clean, structured, and analytically reliable before conducting the exploratory and statistical analyses. Because the dataset originates from three distinct BCSC files merged into a single aggregated structure, precautions were required to guarantee consistency across demographic and clinical variables. All steps were performed in Python using pandas, ensuring full reproducibility.</p>
+<p><strong>1. Harmonization of categorical variables</strong></p>
+<p>To improve interpretability and ensure consistent category ordering during the analysis, the variables were recoded :</p>
+<ul>
+<li><p>Using the BCSC documentation we changed the coded values into descriptive labels.</p></li>
+<li><p>The categorical columns were converted to the category type to optimize memory efficiency and modeling compatibility.</p></li>
+<li><p>Ordered variables (e.g.&nbsp;age, BMI, menopause) were converted into pandas ordered categorical types, which preserves clinical meaning and enables ordinal comparisons.</p>
+<p>e.g.: For BI-RADS, 1 → fatty; 2 → scattered; 3 → heterogeneously dense; 4 → extremely dense</p></li>
+</ul>
+<p>This recoding step was crucial for both EDA and regression modelling, as many variables possess a natural clinical ordering that must be retained.</p>
+<div id="0d54d989" class="cell" data-execution_count="4">
+<details class="code-fold">
+<summary>Show code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>age_map <span class="op">=</span> {<span class="dv">1</span>:<span class="st">'18-29'</span>,<span class="dv">2</span>:<span class="st">'30-34'</span>,<span class="dv">3</span>:<span class="st">'35-39'</span>,<span class="dv">4</span>:<span class="st">'40-44'</span>,<span class="dv">5</span>:<span class="st">'45-49'</span>,<span class="dv">6</span>:<span class="st">'50-54'</span>,<span class="dv">7</span>:<span class="st">'55-59'</span>,<span class="dv">8</span>:<span class="st">'60-64'</span>,<span class="dv">9</span>:<span class="st">'65-69'</span>,<span class="dv">10</span>:<span class="st">'70-74'</span>,<span class="dv">11</span>:<span class="st">'75-79'</span>,<span class="dv">12</span>:<span class="st">'80-84'</span>,<span class="dv">13</span>:<span class="st">'85+'</span>}</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>race_map <span class="op">=</span> {<span class="dv">1</span>:<span class="st">'non-hispanic white'</span>, <span class="dv">2</span>:<span class="st">'non-hispanic black'</span>, <span class="dv">3</span>:<span class="st">'asian/pacific islander'</span>, <span class="dv">4</span>:<span class="st">'native american'</span>,<span class="dv">5</span>:<span class="st">'hispanic'</span>,<span class="dv">6</span>:<span class="st">'other/mixed'</span>,<span class="dv">9</span>:<span class="st">'unknown'</span>}</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>familyhx_map <span class="op">=</span> {<span class="dv">0</span>:<span class="st">'no'</span>, <span class="dv">1</span>:<span class="st">'yes'</span>, <span class="dv">9</span>:<span class="st">'unknown'</span>}</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>menarche_map <span class="op">=</span> {<span class="dv">0</span>:<span class="st">'14+'</span>,<span class="dv">1</span>:<span class="st">'12-13'</span>,<span class="dv">2</span>:<span class="st">'&lt;12'</span>,<span class="dv">9</span>:<span class="st">'unknown'</span>}</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>firstbirth_map <span class="op">=</span> {<span class="dv">0</span>:<span class="st">'&lt;20'</span>,<span class="dv">1</span>:<span class="st">'20-24'</span>,<span class="dv">2</span>:<span class="st">'25-29'</span>,<span class="dv">3</span>:<span class="st">'30+'</span>,<span class="dv">4</span>:<span class="st">'nulliparous'</span>,<span class="dv">9</span>:<span class="st">'unknown'</span>}</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>BIRADS_map <span class="op">=</span> {<span class="dv">1</span>:<span class="st">'fatty'</span>,<span class="dv">2</span>:<span class="st">'scattered'</span>,<span class="dv">3</span>:<span class="st">'heterogeneously dense'</span>, <span class="dv">4</span>:<span class="st">'extremely dense'</span>, <span class="dv">5</span>:<span class="st">'unknown'</span>}</span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>hrt_map <span class="op">=</span> {<span class="dv">0</span>:<span class="st">'no'</span>, <span class="dv">1</span>:<span class="st">'yes'</span>,<span class="dv">9</span>:<span class="st">'unknown'</span>}</span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>menopaus_map <span class="op">=</span> {<span class="dv">1</span>:<span class="st">'pre-menopausal'</span>,<span class="dv">2</span>:<span class="st">'post-menopausal'</span>,<span class="dv">3</span>:<span class="st">'surgical menopause'</span>, <span class="dv">9</span>:<span class="st">'unknown'</span>}</span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>bmi_map <span class="op">=</span> {<span class="dv">1</span>:<span class="st">'10-24.99'</span>,<span class="dv">2</span>:<span class="st">'25-29.99'</span>,<span class="dv">3</span>:<span class="st">'30-34.99'</span>,<span class="dv">4</span>:<span class="st">'35+'</span>,<span class="dv">9</span>:<span class="st">'unknown'</span>}</span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>biophx_map <span class="op">=</span> {<span class="dv">0</span>:<span class="st">'no'</span>,<span class="dv">1</span>:<span class="st">'yes'</span>, <span class="dv">9</span>:<span class="st">'unknown'</span>}</span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>history_map <span class="op">=</span> {<span class="dv">0</span>:<span class="st">'no'</span>,<span class="dv">1</span>:<span class="st">'yes'</span>,<span class="dv">9</span>:<span class="st">'unknown'</span>}</span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a><span class="co">#Replacing the code with the categories</span></span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a>df[<span class="st">'age_group_5_years'</span>]<span class="op">=</span>df[<span class="st">'age_group_5_years'</span>].<span class="bu">map</span>(age_map)</span>
+<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a>df[<span class="st">'race_eth'</span>]<span class="op">=</span>df[<span class="st">'race_eth'</span>].<span class="bu">map</span>(race_map)</span>
+<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a>df[<span class="st">'first_degree_hx'</span>]<span class="op">=</span>df[<span class="st">'first_degree_hx'</span>].<span class="bu">map</span>(familyhx_map)</span>
+<span id="cb8-17"><a href="#cb8-17" aria-hidden="true" tabindex="-1"></a>df[<span class="st">'age_menarche'</span>]<span class="op">=</span>df[<span class="st">'age_menarche'</span>].<span class="bu">map</span>(menarche_map)</span>
+<span id="cb8-18"><a href="#cb8-18" aria-hidden="true" tabindex="-1"></a>df[<span class="st">'age_first_birth'</span>]<span class="op">=</span>df[<span class="st">'age_first_birth'</span>].<span class="bu">map</span>(firstbirth_map)</span>
+<span id="cb8-19"><a href="#cb8-19" aria-hidden="true" tabindex="-1"></a>df[<span class="st">'BIRADS_breast_density'</span>]<span class="op">=</span>df[<span class="st">'BIRADS_breast_density'</span>].<span class="bu">map</span>(BIRADS_map)</span>
+<span id="cb8-20"><a href="#cb8-20" aria-hidden="true" tabindex="-1"></a>df[<span class="st">'current_hrt'</span>]<span class="op">=</span>df[<span class="st">'current_hrt'</span>].<span class="bu">map</span>(hrt_map)</span>
+<span id="cb8-21"><a href="#cb8-21" aria-hidden="true" tabindex="-1"></a>df[<span class="st">'menopaus'</span>]<span class="op">=</span>df[<span class="st">'menopaus'</span>].<span class="bu">map</span>(menopaus_map)</span>
+<span id="cb8-22"><a href="#cb8-22" aria-hidden="true" tabindex="-1"></a>df[<span class="st">'bmi_group'</span>]<span class="op">=</span>df[<span class="st">'bmi_group'</span>].<span class="bu">map</span>(bmi_map)</span>
+<span id="cb8-23"><a href="#cb8-23" aria-hidden="true" tabindex="-1"></a>df[<span class="st">'biophx'</span>]<span class="op">=</span>df[<span class="st">'biophx'</span>].<span class="bu">map</span>(biophx_map)</span>
+<span id="cb8-24"><a href="#cb8-24" aria-hidden="true" tabindex="-1"></a>df[<span class="st">'breast_cancer_history'</span>]<span class="op">=</span>df[<span class="st">'breast_cancer_history'</span>].<span class="bu">map</span>(history_map)</span>
+<span id="cb8-25"><a href="#cb8-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-26"><a href="#cb8-26" aria-hidden="true" tabindex="-1"></a><span class="co">#convert as category</span></span>
+<span id="cb8-27"><a href="#cb8-27" aria-hidden="true" tabindex="-1"></a>cat_cols <span class="op">=</span> [<span class="st">'age_group_5_years'</span>,<span class="st">'race_eth'</span>,<span class="st">'first_degree_hx'</span>,<span class="st">'age_menarche'</span>,<span class="st">'age_first_birth'</span>,<span class="st">'BIRADS_breast_density'</span>,<span class="st">'current_hrt'</span>,<span class="st">'menopaus'</span>,<span class="st">'bmi_group'</span>,<span class="st">'biophx'</span>,<span class="st">'breast_cancer_history'</span>]</span>
+<span id="cb8-28"><a href="#cb8-28" aria-hidden="true" tabindex="-1"></a>df[cat_cols] <span class="op">=</span> df[cat_cols].astype(<span class="st">'category'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+<p><strong>2. Handling of unknown and missing values</strong></p>
+<p>Categories labeled as “unknown” (coded as 9) were systematically converted to NaN values, ensuring compatibility with standard statistical handling of missing data.</p>
+<p>This approach prevents incorrect categorical aggregation and preserves analytical transparency. Below (<a href="#tbl-inter-missing" class="quarto-xref">Table&nbsp;4</a>) we can find the number of values we are going to remove from our dataset.</p>
+<div class="cell" data-execution_count="5">
+<details class="code-fold">
+<summary>Show code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> df.replace(<span class="st">'unknown'</span>,np.nan)</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>display(df.isna().<span class="bu">sum</span>())</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div id="tbl-inter-missing" class="cell quarto-float quarto-figure quarto-figure-center anchored" data-execution_count="5">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-inter-missing-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Table&nbsp;4: NaN values that will need to be removed
+</figcaption>
+<div aria-describedby="tbl-inter-missing-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="cell-output cell-output-display">
+<pre><code>year                          0
+age_group_5_years             0
+race_eth                  98329
+first_degree_hx           88230
+age_menarche             688431
+age_first_birth          331803
+BIRADS_breast_density    179011
+current_hrt              313776
+menopaus                 168892
+bmi_group                459438
+biophx                    63667
+breast_cancer_history    330902
+count                         0
+dtype: int64</code></pre>
+</div>
+</div>
+</figure>
+</div>
+</div>
+<p><strong>3. Construction of binary outcome variables</strong></p>
+<p>Two binary variables were created for the regression models:</p>
+<ul>
+<li><strong>BIRADS_high</strong> = 1 for dense breast tissue (BI-RADS categories 3–4), 0 otherwise.</li>
+<li><strong>breast_cancer_history_bin</strong> = 1 if the woman had a prior breast cancer diagnosis, 0 otherwise.</li>
+</ul>
+<p>This transformation aligns the dataset with the research questions and ensures compatibility with logistic regression.</p>
+<div id="85c94a5b" class="cell" data-execution_count="6">
+<details class="code-fold">
+<summary>Show code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co">#create two binary variables for high BIRADS and cancer history</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>df[<span class="st">'BIRADS_high'</span>]<span class="op">=</span>np.where(df_encoded[<span class="st">'BIRADS_breast_density'</span>].isin([<span class="dv">3</span>,<span class="dv">4</span>]),<span class="dv">1</span>,<span class="dv">0</span>)</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>df[<span class="st">'breast_cancer_history_bin'</span>]<span class="op">=</span>np.where(df_encoded[<span class="st">'breast_cancer_history'</span>]<span class="op">==</span><span class="dv">1</span>,<span class="dv">1</span>,<span class="dv">0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+<p><strong>4. Data type validation and integrity checks</strong></p>
+<p>To ensure that the dataset was ready for regression analysis, the following verifications were performed:</p>
+<ul>
+<li>All frequency counts (count) need to be positive integers</li>
+<li>Validation that categorical variables contained only expected labels</li>
+<li>Presence of duplicate observations, that would need to be removed to maintain one unique record per demographic-clinical subgroup. This last step was not needed as there were no duplicates.</li>
+<li>To confirm consistency with the original dataset, the total number of women across all groups need to be equal the expected number of 6,788,436 mammograms.</li>
+</ul>
+<p>These checks guaranteed that the aggregated data reflected coherent population subgroups.</p>
+<div id="9810aa46" class="cell" data-execution_count="7">
+<details class="code-fold">
+<summary>Show code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co">##integrity checks</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="co">#check that all frequency counts are positive integers</span></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>valid <span class="op">=</span> (df[<span class="st">"count"</span>].<span class="bu">apply</span>(<span class="kw">lambda</span> x: <span class="bu">isinstance</span>(x, <span class="bu">int</span>) <span class="kw">and</span> x <span class="op">&gt;</span> <span class="dv">0</span>)).<span class="bu">all</span>()</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">'all frequency counts are positive integers: '</span>, valid)</span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a><span class="co">#check types and unique values</span></span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> col <span class="kw">in</span> cat_cols:</span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>  <span class="bu">print</span>(col, <span class="st">':'</span>,df[col].unique())</span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a><span class="co">#check for duplicates</span></span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">'Duplicates: '</span>, df.duplicated().<span class="bu">sum</span>())</span>
+<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a><span class="co">#the total number of observations should be 6'788'436</span></span>
+<span id="cb12-14"><a href="#cb12-14" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">'Number of observations: '</span>, df[<span class="st">'count'</span>].<span class="bu">sum</span>())</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+<p><strong>5. Final filtering and validation</strong></p>
+<p>In order to obtain a clean and fully interpretable final dataset, that could be used for our Exploratory Data Analysis, we excluded rows containing missing values. The final dataset contains 421,880 aggregated observations, each corresponding to a unique combination of demographic and clinical attributes.</p>
+<p><a href="#tbl-cleaned-head" class="quarto-xref">Table&nbsp;5</a> gives a look at the first rows of this dataset:</p>
+<div class="cell" data-execution_count="8">
+<details class="code-fold">
+<summary>Show code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>df_cleaned <span class="op">=</span> df.dropna()</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>display(df_cleaned.head())</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Number of variables (columns)</span></span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>num_variables <span class="op">=</span> df_cleaned.shape[<span class="dv">1</span>]</span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Number of observations (lines)</span></span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>num_observations <span class="op">=</span> df_cleaned.shape[<span class="dv">0</span>]</span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Total number of values</span></span>
+<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a>total_values <span class="op">=</span> df_cleaned.size</span>
+<span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-13"><a href="#cb13-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-14"><a href="#cb13-14" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">'number of variables = '</span>, num_variables)</span>
+<span id="cb13-15"><a href="#cb13-15" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">'number of observations = '</span>, num_observations)</span>
+<span id="cb13-16"><a href="#cb13-16" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">'number of values = '</span>, total_values)</span>
+<span id="cb13-17"><a href="#cb13-17" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">'number of rows removed = '</span>, df.shape[<span class="dv">0</span>] <span class="op">-</span> df_cleaned.shape[<span class="dv">0</span>])</span>
+<span id="cb13-18"><a href="#cb13-18" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">'</span><span class="sc">% o</span><span class="st">f the data removed = '</span>, <span class="bu">round</span>(((df.shape[<span class="dv">0</span>] <span class="op">-</span> df_cleaned.shape[<span class="dv">0</span>]) <span class="op">/</span> df.shape[<span class="dv">0</span>]) <span class="op">*</span> <span class="dv">100</span>, <span class="dv">2</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>number of variables =  15
+number of observations =  345064
+number of values =  5175960
+number of rows removed =  1177276
+% of the data removed =  77.33</code></pre>
+</div>
+<div id="tbl-cleaned-head" class="cell quarto-float quarto-figure quarto-figure-center anchored" data-execution_count="8">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-cleaned-head-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Table&nbsp;5: First rows of the cleaned dataset
+</figcaption>
+<div aria-describedby="tbl-cleaned-head-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="cell-output cell-output-display">
+<div>
+
+
+<table class="dataframe do-not-create-environment cell caption-top table table-sm table-striped small" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">year</th>
+<th data-quarto-table-cell-role="th">age_group_5_years</th>
+<th data-quarto-table-cell-role="th">race_eth</th>
+<th data-quarto-table-cell-role="th">first_degree_hx</th>
+<th data-quarto-table-cell-role="th">age_menarche</th>
+<th data-quarto-table-cell-role="th">age_first_birth</th>
+<th data-quarto-table-cell-role="th">BIRADS_breast_density</th>
+<th data-quarto-table-cell-role="th">current_hrt</th>
+<th data-quarto-table-cell-role="th">menopaus</th>
+<th data-quarto-table-cell-role="th">bmi_group</th>
+<th data-quarto-table-cell-role="th">biophx</th>
+<th data-quarto-table-cell-role="th">breast_cancer_history</th>
+<th data-quarto-table-cell-role="th">count</th>
+<th data-quarto-table-cell-role="th">BIRADS_high</th>
+<th data-quarto-table-cell-role="th">breast_cancer_history_bin</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">0</th>
+<td>2005</td>
+<td>18-29</td>
+<td>non-hispanic white</td>
+<td>no</td>
+<td>12-13</td>
+<td>&lt;20</td>
+<td>scattered</td>
+<td>no</td>
+<td>pre-menopausal</td>
+<td>10-24.99</td>
+<td>no</td>
+<td>no</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">3</th>
+<td>2005</td>
+<td>18-29</td>
+<td>non-hispanic white</td>
+<td>no</td>
+<td>14+</td>
+<td>nulliparous</td>
+<td>scattered</td>
+<td>no</td>
+<td>pre-menopausal</td>
+<td>10-24.99</td>
+<td>no</td>
+<td>no</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">6</th>
+<td>2005</td>
+<td>18-29</td>
+<td>non-hispanic white</td>
+<td>no</td>
+<td>14+</td>
+<td>20-24</td>
+<td>extremely dense</td>
+<td>no</td>
+<td>pre-menopausal</td>
+<td>35+</td>
+<td>no</td>
+<td>no</td>
+<td>1</td>
+<td>1</td>
+<td>0</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">8</th>
+<td>2005</td>
+<td>18-29</td>
+<td>non-hispanic white</td>
+<td>no</td>
+<td>14+</td>
+<td>&lt;20</td>
+<td>extremely dense</td>
+<td>no</td>
+<td>pre-menopausal</td>
+<td>25-29.99</td>
+<td>no</td>
+<td>no</td>
+<td>1</td>
+<td>1</td>
+<td>0</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">16</th>
+<td>2005</td>
+<td>18-29</td>
+<td>non-hispanic white</td>
+<td>no</td>
+<td>&lt;12</td>
+<td>&lt;20</td>
+<td>scattered</td>
+<td>no</td>
+<td>pre-menopausal</td>
+<td>30-34.99</td>
+<td>no</td>
+<td>no</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+</figure>
+</div>
+</div>
+<p>After cleaning, the dataset contains 421,880 observations across 15 variables, for a total of 6,328,200 values. We removed 1,100,460 rows due to missing or unknown categorical values, representing approximately 72,3% of the original data.</p>
+<p><a href="#tbl-cleaned-info" class="quarto-xref">Table&nbsp;6</a> shows the types of the variables in our cleaned dataset and confirms that there are no more missing values:</p>
+<details class="code-fold">
+<summary>Show code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>df_cleaned.info()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div id="tbl-cleaned-info" class="cell quarto-float quarto-figure quarto-figure-center anchored" data-execution_count="9">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-cleaned-info-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Table&nbsp;6: cleaned dataset summary
+</figcaption>
+<div aria-describedby="tbl-cleaned-info-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="cell-output cell-output-stdout">
+<pre><code>&lt;class 'pandas.core.frame.DataFrame'&gt;
+Index: 345064 entries, 0 to 1522339
+Data columns (total 15 columns):
+ #   Column                     Non-Null Count   Dtype   
+---  ------                     --------------   -----   
+ 0   year                       345064 non-null  int64   
+ 1   age_group_5_years          345064 non-null  category
+ 2   race_eth                   345064 non-null  category
+ 3   first_degree_hx            345064 non-null  category
+ 4   age_menarche               345064 non-null  category
+ 5   age_first_birth            345064 non-null  category
+ 6   BIRADS_breast_density      345064 non-null  category
+ 7   current_hrt                345064 non-null  category
+ 8   menopaus                   345064 non-null  category
+ 9   bmi_group                  345064 non-null  category
+ 10  biophx                     345064 non-null  category
+ 11  breast_cancer_history      345064 non-null  category
+ 12  count                      345064 non-null  int64   
+ 13  BIRADS_high                345064 non-null  int64   
+ 14  breast_cancer_history_bin  345064 non-null  int64   
+dtypes: category(11), int64(4)
+memory usage: 16.8 MB</code></pre>
+</div>
+</div>
+</figure>
+</div>
+<p>The main information about the cleaned dataset that we are going to use for our analysis is summarised in <a href="#tbl-cleaned-descr" class="quarto-xref">Table&nbsp;7</a>:</p>
+<div class="cell" data-execution_count="10">
+<details class="code-fold">
+<summary>Show code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>df_cleaned_descr <span class="op">=</span> df_cleaned.describe(include <span class="op">=</span> <span class="st">'all'</span>)</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>df_cleaned_descr[<span class="st">'year'</span>] <span class="op">=</span> df_cleaned_descr[<span class="st">'year'</span>].<span class="bu">round</span>(<span class="dv">0</span>)</span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>display(df_cleaned_descr)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div id="tbl-cleaned-descr" class="cell quarto-float quarto-figure quarto-figure-center anchored" data-execution_count="10">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-cleaned-descr-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Table&nbsp;7: Description of the cleaned dataset
+</figcaption>
+<div aria-describedby="tbl-cleaned-descr-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="cell-output cell-output-display">
+<div>
+
+
+<table class="dataframe do-not-create-environment cell caption-top table table-sm table-striped small" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">year</th>
+<th data-quarto-table-cell-role="th">age_group_5_years</th>
+<th data-quarto-table-cell-role="th">race_eth</th>
+<th data-quarto-table-cell-role="th">first_degree_hx</th>
+<th data-quarto-table-cell-role="th">age_menarche</th>
+<th data-quarto-table-cell-role="th">age_first_birth</th>
+<th data-quarto-table-cell-role="th">BIRADS_breast_density</th>
+<th data-quarto-table-cell-role="th">current_hrt</th>
+<th data-quarto-table-cell-role="th">menopaus</th>
+<th data-quarto-table-cell-role="th">bmi_group</th>
+<th data-quarto-table-cell-role="th">biophx</th>
+<th data-quarto-table-cell-role="th">breast_cancer_history</th>
+<th data-quarto-table-cell-role="th">count</th>
+<th data-quarto-table-cell-role="th">BIRADS_high</th>
+<th data-quarto-table-cell-role="th">breast_cancer_history_bin</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">count</th>
+<td>345064.0</td>
+<td>345064</td>
+<td>345064</td>
+<td>345064</td>
+<td>345064</td>
+<td>345064</td>
+<td>345064</td>
+<td>345064</td>
+<td>345064</td>
+<td>345064</td>
+<td>345064</td>
+<td>345064</td>
+<td>345064.000000</td>
+<td>345064.000000</td>
+<td>345064.000000</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">unique</th>
+<td>NaN</td>
+<td>13</td>
+<td>6</td>
+<td>2</td>
+<td>3</td>
+<td>5</td>
+<td>4</td>
+<td>2</td>
+<td>3</td>
+<td>4</td>
+<td>2</td>
+<td>2</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">top</th>
+<td>NaN</td>
+<td>50-54</td>
+<td>non-hispanic white</td>
+<td>no</td>
+<td>12-13</td>
+<td>20-24</td>
+<td>scattered</td>
+<td>no</td>
+<td>post-menopausal</td>
+<td>10-24.99</td>
+<td>no</td>
+<td>no</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">freq</th>
+<td>NaN</td>
+<td>55940</td>
+<td>160707</td>
+<td>244775</td>
+<td>146835</td>
+<td>80181</td>
+<td>128616</td>
+<td>324839</td>
+<td>203441</td>
+<td>105624</td>
+<td>211903</td>
+<td>292132</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">mean</th>
+<td>2011.0</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>4.024227</td>
+<td>0.491874</td>
+<td>0.153398</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">std</th>
+<td>4.0</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>10.468720</td>
+<td>0.499935</td>
+<td>0.360371</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">min</th>
+<td>2005.0</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>1.000000</td>
+<td>0.000000</td>
+<td>0.000000</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">25%</th>
+<td>2008.0</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>1.000000</td>
+<td>0.000000</td>
+<td>0.000000</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">50%</th>
+<td>2012.0</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>1.000000</td>
+<td>0.000000</td>
+<td>0.000000</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">75%</th>
+<td>2015.0</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>3.000000</td>
+<td>1.000000</td>
+<td>0.000000</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">max</th>
+<td>2017.0</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>705.000000</td>
+<td>1.000000</td>
+<td>1.000000</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+</figure>
+</div>
+</div>
+<p><strong>6. Re-encoding for statistical modelling</strong></p>
+<p>Because logistic regression requires numerical inputs, all categorical variables of the cleaned dataset needed to be re-encoded using:</p>
+<ul>
+<li>One-hot encoding for nominal categories (family history, breast density)</li>
+<li>Ordinal encoding for clinically ordered variables (age, BMI, menopause)</li>
+</ul>
+<p>This step was directly informed by the EDA, which showed strong monotonic patterns (e.g., density decreases with age and BMI). Encoding therefore preserved clinically relevant structure and avoided inappropriate assumptions.</p>
+<div id="2841f775" class="cell" data-execution_count="11">
+<details class="code-fold">
+<summary>Show code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="co">##1. Recode categories in a meaningful numerical order</span></span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Recode age groups in ascending order</span></span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>age_order <span class="op">=</span> {</span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>    <span class="st">"18-29"</span>: <span class="dv">0</span>, <span class="st">"30-34"</span>: <span class="dv">1</span>, <span class="st">"35-39"</span>: <span class="dv">2</span>, <span class="st">"40-44"</span>: <span class="dv">3</span>,</span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>    <span class="st">"45-49"</span>: <span class="dv">4</span>, <span class="st">"50-54"</span>: <span class="dv">5</span>, <span class="st">"55-59"</span>: <span class="dv">6</span>, <span class="st">"60-64"</span>: <span class="dv">7</span>,</span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>    <span class="st">"65-69"</span>: <span class="dv">8</span>, <span class="st">"70-74"</span>: <span class="dv">9</span>, <span class="st">"75-79"</span>: <span class="dv">10</span>, <span class="st">"80-84"</span>: <span class="dv">11</span>, <span class="st">"85+"</span>: <span class="dv">12</span></span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Recode BMI categories in ascending BMI</span></span>
+<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a>bmi_order <span class="op">=</span> {</span>
+<span id="cb18-11"><a href="#cb18-11" aria-hidden="true" tabindex="-1"></a>    <span class="st">"10-24.99"</span>: <span class="dv">0</span>,</span>
+<span id="cb18-12"><a href="#cb18-12" aria-hidden="true" tabindex="-1"></a>    <span class="st">"25-29.99"</span>: <span class="dv">1</span>,</span>
+<span id="cb18-13"><a href="#cb18-13" aria-hidden="true" tabindex="-1"></a>    <span class="st">"30-34.99"</span>: <span class="dv">2</span>,</span>
+<span id="cb18-14"><a href="#cb18-14" aria-hidden="true" tabindex="-1"></a>    <span class="st">"35+"</span>: <span class="dv">3</span></span>
+<span id="cb18-15"><a href="#cb18-15" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb18-16"><a href="#cb18-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-17"><a href="#cb18-17" aria-hidden="true" tabindex="-1"></a><span class="co"># Recode menopausal status logically: pre → surgical → post</span></span>
+<span id="cb18-18"><a href="#cb18-18" aria-hidden="true" tabindex="-1"></a>menopause_order <span class="op">=</span> {</span>
+<span id="cb18-19"><a href="#cb18-19" aria-hidden="true" tabindex="-1"></a>    <span class="st">"pre-menopausal"</span>: <span class="dv">0</span>,</span>
+<span id="cb18-20"><a href="#cb18-20" aria-hidden="true" tabindex="-1"></a>    <span class="st">"surgical menopause"</span>: <span class="dv">1</span>,</span>
+<span id="cb18-21"><a href="#cb18-21" aria-hidden="true" tabindex="-1"></a>    <span class="st">"post-menopausal"</span>: <span class="dv">2</span></span>
+<span id="cb18-22"><a href="#cb18-22" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb18-23"><a href="#cb18-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-24"><a href="#cb18-24" aria-hidden="true" tabindex="-1"></a><span class="co"># Recode family history: no = 0, yes = 1</span></span>
+<span id="cb18-25"><a href="#cb18-25" aria-hidden="true" tabindex="-1"></a>family_order <span class="op">=</span> {</span>
+<span id="cb18-26"><a href="#cb18-26" aria-hidden="true" tabindex="-1"></a>    <span class="st">"no"</span>: <span class="dv">0</span>,</span>
+<span id="cb18-27"><a href="#cb18-27" aria-hidden="true" tabindex="-1"></a>    <span class="st">"yes"</span>: <span class="dv">1</span></span>
+<span id="cb18-28"><a href="#cb18-28" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb18-29"><a href="#cb18-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-30"><a href="#cb18-30" aria-hidden="true" tabindex="-1"></a><span class="co"># Recode BI-RADS density (low → high)</span></span>
+<span id="cb18-31"><a href="#cb18-31" aria-hidden="true" tabindex="-1"></a>birads_order <span class="op">=</span> {</span>
+<span id="cb18-32"><a href="#cb18-32" aria-hidden="true" tabindex="-1"></a>    <span class="st">"fatty"</span>: <span class="dv">0</span>,</span>
+<span id="cb18-33"><a href="#cb18-33" aria-hidden="true" tabindex="-1"></a>    <span class="st">"scattered"</span>: <span class="dv">1</span>,</span>
+<span id="cb18-34"><a href="#cb18-34" aria-hidden="true" tabindex="-1"></a>    <span class="st">"heterogeneously dense"</span>: <span class="dv">2</span>,</span>
+<span id="cb18-35"><a href="#cb18-35" aria-hidden="true" tabindex="-1"></a>    <span class="st">"extremely dense"</span>: <span class="dv">3</span></span>
+<span id="cb18-36"><a href="#cb18-36" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb18-37"><a href="#cb18-37" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-38"><a href="#cb18-38" aria-hidden="true" tabindex="-1"></a><span class="co"># Recode prior breast cancer history</span></span>
+<span id="cb18-39"><a href="#cb18-39" aria-hidden="true" tabindex="-1"></a>history_order <span class="op">=</span> {</span>
+<span id="cb18-40"><a href="#cb18-40" aria-hidden="true" tabindex="-1"></a>    <span class="st">"no"</span>: <span class="dv">0</span>,</span>
+<span id="cb18-41"><a href="#cb18-41" aria-hidden="true" tabindex="-1"></a>    <span class="st">"yes"</span>: <span class="dv">1</span></span>
+<span id="cb18-42"><a href="#cb18-42" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb18-43"><a href="#cb18-43" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-44"><a href="#cb18-44" aria-hidden="true" tabindex="-1"></a><span class="co">##2. Apply recoding to the dataframe</span></span>
+<span id="cb18-45"><a href="#cb18-45" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-46"><a href="#cb18-46" aria-hidden="true" tabindex="-1"></a>df_cleaned[<span class="st">"age_code"</span>] <span class="op">=</span> df_cleaned[<span class="st">"age_group_5_years"</span>].<span class="bu">map</span>(age_order)</span>
+<span id="cb18-47"><a href="#cb18-47" aria-hidden="true" tabindex="-1"></a>df_cleaned[<span class="st">"bmi_code"</span>] <span class="op">=</span> df_cleaned[<span class="st">"bmi_group"</span>].<span class="bu">map</span>(bmi_order)</span>
+<span id="cb18-48"><a href="#cb18-48" aria-hidden="true" tabindex="-1"></a>df_cleaned[<span class="st">"menopaus_code"</span>] <span class="op">=</span> df_cleaned[<span class="st">"menopaus"</span>].<span class="bu">map</span>(menopause_order)</span>
+<span id="cb18-49"><a href="#cb18-49" aria-hidden="true" tabindex="-1"></a>df_cleaned[<span class="st">"family_code"</span>] <span class="op">=</span> df_cleaned[<span class="st">"first_degree_hx"</span>].<span class="bu">map</span>(family_order)</span>
+<span id="cb18-50"><a href="#cb18-50" aria-hidden="true" tabindex="-1"></a>df_cleaned[<span class="st">"birads_code"</span>] <span class="op">=</span> df_cleaned[<span class="st">"BIRADS_breast_density"</span>].<span class="bu">map</span>(birads_order)</span>
+<span id="cb18-51"><a href="#cb18-51" aria-hidden="true" tabindex="-1"></a>df_cleaned[<span class="st">"history_code"</span>] <span class="op">=</span> df_cleaned[<span class="st">"breast_cancer_history"</span>].<span class="bu">map</span>(history_order)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+<p><strong>6. Validation of multicollinearity and consistency</strong></p>
+<p>Before modelling, a correlation analysis was performed on recoded numeric variables. This allowed us to:</p>
+<ul>
+<li>Confirm the absence of problematic multicollinearity</li>
+<li>Verify that the clinical patterns observed were valid, (e.g., age ↔︎ menopause correlation ≈ 0.68),</li>
+<li>Ensure that numeric encodings behaved as expected.</li>
+</ul>
+<p>This final diagnostic step validated that the preprocessing pipeline produced a dataset suitable for unbiased and stable regression modelling.</p>
+<div class="cell" data-execution_count="12">
+<details class="code-fold">
+<summary>Show code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="co">##3. Build the focused correlation dataframe</span></span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>df_corr <span class="op">=</span> df_cleaned[[</span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>    <span class="st">"age_code"</span>,</span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>    <span class="st">"bmi_code"</span>,</span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>    <span class="st">"menopaus_code"</span>,</span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a>    <span class="st">"family_code"</span>,</span>
+<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a>    <span class="st">"birads_code"</span>,</span>
+<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a>    <span class="st">"history_code"</span></span>
+<span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a>]]</span>
+<span id="cb19-11"><a href="#cb19-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-12"><a href="#cb19-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Compute correlation matrix</span></span>
+<span id="cb19-13"><a href="#cb19-13" aria-hidden="true" tabindex="-1"></a>corr_focus <span class="op">=</span> df_corr.corr()</span>
+<span id="cb19-14"><a href="#cb19-14" aria-hidden="true" tabindex="-1"></a>display(corr_focus)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div id="tbl-correlation" class="cell quarto-float quarto-figure quarto-figure-center anchored" data-execution_count="12">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-correlation-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Table&nbsp;8: Correlation table of the pertinent variables
+</figcaption>
+<div aria-describedby="tbl-correlation-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="cell-output cell-output-display">
+<div>
+
+
+<table class="dataframe do-not-create-environment cell caption-top table table-sm table-striped small" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">age_code</th>
+<th data-quarto-table-cell-role="th">bmi_code</th>
+<th data-quarto-table-cell-role="th">menopaus_code</th>
+<th data-quarto-table-cell-role="th">family_code</th>
+<th data-quarto-table-cell-role="th">birads_code</th>
+<th data-quarto-table-cell-role="th">history_code</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">age_code</th>
+<td>1.000000</td>
+<td>-0.059195</td>
+<td>0.684940</td>
+<td>0.046004</td>
+<td>-0.226876</td>
+<td>0.218978</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">bmi_code</th>
+<td>-0.059195</td>
+<td>1.000000</td>
+<td>-0.044981</td>
+<td>-0.013766</td>
+<td>-0.256822</td>
+<td>-0.035486</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">menopaus_code</th>
+<td>0.684940</td>
+<td>-0.044981</td>
+<td>1.000000</td>
+<td>0.022287</td>
+<td>-0.192770</td>
+<td>0.169972</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">family_code</th>
+<td>0.046004</td>
+<td>-0.013766</td>
+<td>0.022287</td>
+<td>1.000000</td>
+<td>0.011306</td>
+<td>-0.011549</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">birads_code</th>
+<td>-0.226876</td>
+<td>-0.256822</td>
+<td>-0.192770</td>
+<td>0.011306</td>
+<td>1.000000</td>
+<td>-0.027893</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">history_code</th>
+<td>0.218978</td>
+<td>-0.035486</td>
+<td>0.169972</td>
+<td>-0.011549</td>
+<td>-0.027893</td>
+<td>1.000000</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+</figure>
+</div>
+</div>
+</section>
+<section id="challenges" class="level3">
+<h3 class="anchored" data-anchor-id="challenges">2.5 Challenges</h3>
+<p>While the dataset is comprehensive and large-scale, several challenges limit the scope of the analysis. The most significant limitation lies in its aggregated structure, which prevents patient-level investigation and reduces the granularity of possible analyses. Additionally, certain variables contain unknown or missing values, which may affect statistical robustness. Some combinations of demographic and clinical factors are rare, leading to potential sparsity in specific subgroups. Moreover, although the dataset includes information on race and ethnicity, this variable cannot be used for inferential analysis because of a strong overrepresentation of White non-Hispanic women, which would introduce substantial bias in population comparisons. These factors must be considered when interpreting the results of the exploratory analysis and logistic regression modeling.</p>
+<p>We will explore more concretely these challenges in the EDA section.</p>
+</section>
+</section>
+<section id="exploratory-data-analysis-eda" class="level2">
+<h2 class="anchored" data-anchor-id="exploratory-data-analysis-eda">3. Exploratory Data Analysis (EDA)</h2>
+<section id="purpose" class="level3">
+<h3 class="anchored" data-anchor-id="purpose">3.1 Purpose</h3>
+<p>The purpose of the Exploratory Data Analysis (EDA) is to gain a comprehensive understanding of the BCSC dataset before conducting any formal statistical modelling. This preliminary step allows us to identify overall patterns, examine the distribution of key clinical and demographic variables, and detect potential data issues or structural biases that could affect subsequent analyses.</p>
+<p>In this study, the EDA is used to characterize the profiles of women with high breast density or a personal history of breast cancer, representing respectively 50.89% and 6.18% of the dataset, and to explore how major determinants such as age, BMI, menopausal status, family history, and reproductive factors relate to these outcomes.</p>
+<div id="dffc5e34" class="cell" data-execution_count="13">
+<details class="code-fold">
+<summary>Show code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>p_birads_high <span class="op">=</span> (df_cleaned[<span class="st">'BIRADS_high'</span>] <span class="op">*</span> df_cleaned[<span class="st">'count'</span>]).<span class="bu">sum</span>() <span class="op">/</span> df_cleaned[<span class="st">'count'</span>].<span class="bu">sum</span>()</span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>p_history <span class="op">=</span> (df_cleaned[<span class="st">'breast_cancer_history_bin'</span>] <span class="op">*</span> df_cleaned[<span class="st">'count'</span>]).<span class="bu">sum</span>() <span class="op">/</span> df_cleaned[<span class="st">'count'</span>].<span class="bu">sum</span>()</span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f'Proportion with high breast density : </span><span class="sc">{</span>p_birads_high<span class="sc">:.2%}</span><span class="ss">'</span>)</span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f'Proportion with prior breast cancer : </span><span class="sc">{</span>p_history<span class="sc">:.2%}</span><span class="ss">'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Proportion with high breast density : 50.89%
+Proportion with prior breast cancer : 6.18%</code></pre>
+</div>
+</div>
+<p>These insights guide the selection and engineering of variables for modelling, support decisions regarding model specification and ensure that subsequent analyses are built on a solid empirical foundation. Finally, the dataset presents a noticeable overrepresentation of non-Hispanic white women (<a href="#fig-distr-race" class="quarto-xref">Figure&nbsp;1</a>), which limits the scope of ethnic comparisons and requires cautious interpretation of this variable.</p>
+<div id="cell-fig-distr-race" class="cell" data-execution_count="14">
+<details class="code-fold">
+<summary>Show code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">8</span>, <span class="dv">5</span>))</span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>sns.countplot(</span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>    data<span class="op">=</span>df_cleaned, </span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>    x<span class="op">=</span><span class="st">'race_eth'</span>,</span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>    order<span class="op">=</span>df_cleaned[<span class="st">'race_eth'</span>].value_counts().index</span>
+<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-8"><a href="#cb22-8" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">"Distribution of Race/Ethnicity"</span>, fontsize<span class="op">=</span><span class="dv">14</span>, fontweight<span class="op">=</span><span class="st">'bold'</span>)</span>
+<span id="cb22-9"><a href="#cb22-9" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">"Race / Ethnicity"</span>)</span>
+<span id="cb22-10"><a href="#cb22-10" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">"Count"</span>)</span>
+<span id="cb22-11"><a href="#cb22-11" aria-hidden="true" tabindex="-1"></a>plt.xticks(rotation<span class="op">=</span><span class="dv">45</span>)</span>
+<span id="cb22-12"><a href="#cb22-12" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()</span>
+<span id="cb22-13"><a href="#cb22-13" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-display">
+<div id="fig-distr-race" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-distr-race-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="update_AI_files/figure-html/fig-distr-race-output-1.png" width="758" height="469" class="figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-distr-race-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;1: Distribution of Race/Ethnicity
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="univariate-analysis" class="level3">
+<h3 class="anchored" data-anchor-id="univariate-analysis">3.2 Univariate Analysis</h3>
+<div id="cell-fig-prop-birads-BMI" class="cell" data-execution_count="15">
+<details class="code-fold">
+<summary>Show code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="co">## Calculer la proportion</span></span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>prop_birads_bmi <span class="op">=</span> (df_cleaned.groupby(<span class="st">'bmi_group'</span>)[<span class="st">'BIRADS_high'</span>].mean().reset_index())</span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">8</span>,<span class="dv">5</span>))</span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a>sns.barplot(</span>
+<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a>    data<span class="op">=</span>prop_birads_bmi,</span>
+<span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a>    x<span class="op">=</span><span class="st">'bmi_group'</span>,</span>
+<span id="cb23-8"><a href="#cb23-8" aria-hidden="true" tabindex="-1"></a>    y<span class="op">=</span><span class="st">'BIRADS_high'</span></span>
+<span id="cb23-9"><a href="#cb23-9" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb23-10"><a href="#cb23-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-11"><a href="#cb23-11" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">"Proportion of Women with High Breast Density by BMI Group"</span>, fontsize<span class="op">=</span><span class="dv">14</span>, fontweight<span class="op">=</span><span class="st">'bold'</span>)</span>
+<span id="cb23-12"><a href="#cb23-12" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">"Proportion (0–1)"</span>)</span>
+<span id="cb23-13"><a href="#cb23-13" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">"BMI Group"</span>)</span>
+<span id="cb23-14"><a href="#cb23-14" aria-hidden="true" tabindex="-1"></a>plt.xticks(rotation<span class="op">=</span><span class="dv">45</span>)</span>
+<span id="cb23-15"><a href="#cb23-15" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()</span>
+<span id="cb23-16"><a href="#cb23-16" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-display">
+<div id="fig-prop-birads-bmi" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-prop-birads-bmi-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="update_AI_files/figure-html/fig-prop-birads-bmi-output-1.png" width="758" height="469" class="figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-prop-birads-bmi-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;2: Proportion of women with high breast density by BMI group
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p><a href="#fig-prop-birads-bmi" class="quarto-xref">Figure&nbsp;2</a> shows the proportion of women with high breast density (BI-RADS = 3 or 4) across BMI categories. A strong decreasing pattern emerges: women in the lowest BMI group (18–24.99) exhibit the highest proportion of dense breasts (around 65%), while this proportion steadily declines across higher BMI ranges, reaching its lowest level among women with BMI ≥ 35.</p>
+<p>This inverse relationship is biologically well-established. As body fat increases, the proportion of fibroglandular tissue decreases, mechanically lowering breast density. Because breast density is both a major risk factor for breast cancer and a determinant of mammography sensitivity, BMI is therefore an essential variable to consider when profiling women who are more likely to present high-density breast tissue.</p>
+</section>
+<section id="bivariate-analysis" class="level3">
+<h3 class="anchored" data-anchor-id="bivariate-analysis">3.3 Bivariate Analysis</h3>
+<div id="cell-fig-prop-birads-age" class="cell" data-execution_count="16">
+<details class="code-fold">
+<summary>Show code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb24"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>prop_birads_age <span class="op">=</span> (df_cleaned.groupby(<span class="st">'age_group_5_years'</span>)[<span class="st">'BIRADS_high'</span>].mean().reset_index())</span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">10</span>,<span class="dv">5</span>))</span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a>sns.barplot(</span>
+<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a>    data<span class="op">=</span>prop_birads_age,</span>
+<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a>    x<span class="op">=</span><span class="st">'age_group_5_years'</span>,</span>
+<span id="cb24-7"><a href="#cb24-7" aria-hidden="true" tabindex="-1"></a>    y<span class="op">=</span><span class="st">'BIRADS_high'</span></span>
+<span id="cb24-8"><a href="#cb24-8" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb24-9"><a href="#cb24-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-10"><a href="#cb24-10" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">"Proportion of Women with High Breast Density by Age Group"</span>, fontsize<span class="op">=</span><span class="dv">14</span>, fontweight<span class="op">=</span><span class="st">'bold'</span>)</span>
+<span id="cb24-11"><a href="#cb24-11" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">"Proportion (0–1)"</span>)</span>
+<span id="cb24-12"><a href="#cb24-12" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">"Age Group (5-year intervals)"</span>)</span>
+<span id="cb24-13"><a href="#cb24-13" aria-hidden="true" tabindex="-1"></a>plt.xticks(rotation<span class="op">=</span><span class="dv">45</span>)</span>
+<span id="cb24-14"><a href="#cb24-14" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()</span>
+<span id="cb24-15"><a href="#cb24-15" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-display">
+<div id="fig-prop-birads-age" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-prop-birads-age-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="update_AI_files/figure-html/fig-prop-birads-age-output-1.png" width="950" height="470" class="figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-prop-birads-age-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;3: Proportion of women with high breast density by age group
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p><a href="#fig-prop-birads-age" class="quarto-xref">Figure&nbsp;3</a> displays the proportion of women with high breast density (BI-RADS 3–4) across five-year age categories. A strong and consistent decreasing trend emerges: the highest density levels are observed among women aged 18–34, where more than 70% present dense breast tissue. This proportion gradually declines with age, reaching around 30–35% among women aged 70 and older.</p>
+<p>This pattern reflects well-known physiological changes. With increasing age, glandular breast tissue is progressively replaced by adipose tissue, naturally lowering measured density (<span class="citation" data-cites="Kim2020">Kim et al. (<a href="#ref-Kim2020" role="doc-biblioref">2020</a>)</span>). Because both breast density and age are important predictors of breast cancer risk, this figure highlights age as a crucial variable to include in the analysis and motivates its role as a major confounder in the statistical models.</p>
+<div id="cell-fig-prop-history-menopaus" class="cell" data-execution_count="17">
+<details class="code-fold">
+<summary>Show code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb25"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>prop_cancer_menop <span class="op">=</span> (df_cleaned.groupby(<span class="st">'menopaus'</span>).<span class="bu">apply</span>(<span class="kw">lambda</span> g: np.average(g[<span class="st">'breast_cancer_history_bin'</span>], weights<span class="op">=</span>g[<span class="st">'count'</span>])).reset_index(name<span class="op">=</span><span class="st">'prop_prior_cancer'</span>))</span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">8</span>,<span class="dv">5</span>))</span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a>sns.barplot(</span>
+<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a>    data<span class="op">=</span>prop_cancer_menop,</span>
+<span id="cb25-6"><a href="#cb25-6" aria-hidden="true" tabindex="-1"></a>    x<span class="op">=</span><span class="st">'menopaus'</span>,</span>
+<span id="cb25-7"><a href="#cb25-7" aria-hidden="true" tabindex="-1"></a>    y<span class="op">=</span><span class="st">'prop_prior_cancer'</span></span>
+<span id="cb25-8"><a href="#cb25-8" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb25-9"><a href="#cb25-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-10"><a href="#cb25-10" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">"Proportion of Women with Prior Breast Cancer by Menopausal Status"</span>, fontsize<span class="op">=</span><span class="dv">14</span>, fontweight<span class="op">=</span><span class="st">'bold'</span>)</span>
+<span id="cb25-11"><a href="#cb25-11" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">"Proportion (0–1)"</span>)</span>
+<span id="cb25-12"><a href="#cb25-12" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">"Menopausal Status"</span>)</span>
+<span id="cb25-13"><a href="#cb25-13" aria-hidden="true" tabindex="-1"></a>plt.xticks(rotation<span class="op">=</span><span class="dv">30</span>)</span>
+<span id="cb25-14"><a href="#cb25-14" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()</span>
+<span id="cb25-15"><a href="#cb25-15" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-display">
+<div id="fig-prop-history-menopaus" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-prop-history-menopaus-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="update_AI_files/figure-html/fig-prop-history-menopaus-output-1.png" width="782" height="469" class="figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-prop-history-menopaus-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;4: Proportion of women with prior breast cancer by menauposal status
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p><a href="#fig-prop-history-menopaus" class="quarto-xref">Figure&nbsp;4</a> illustrates the proportion of women with a prior breast cancer diagnosis across different menopausal categories. The pattern is pronounced: post-menopausal women exhibit the highest prevalence of past breast cancer, followed by women with surgical menopause, while pre-menopausal women show the lowest proportions. This trend aligns with well-established clinical evidence indicating that breast cancer risk increases with age and cumulative hormonal exposure. Menopausal status therefore captures both biological aging and shifts in estrogen production, which explains its strong association with past breast cancer. Natural menopause reflects a gradual, age-related decline in estrogen levels, whereas surgical menopause results from ovary removal and causes an abrupt drop in hormones. Women with surgical menopause often undergo the procedure due to underlying reproductive health issues or elevated genetic risk, which helps explain their higher rates of past breast cancer compared to naturally post-menopausal women (<span class="citation" data-cites="Abildgaard2018">Abildgaard et al. (<a href="#ref-Abildgaard2018" role="doc-biblioref">2018</a>)</span>). Because menopausal status is a major determinant of risk, this figure supports its inclusion as a key variable in subsequent statistical modelling aimed at identifying high-risk profiles.</p>
+<div id="cell-fig-prop-history-family" class="cell" data-execution_count="18">
+<details class="code-fold">
+<summary>Show code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb26"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>prop_cancer_family <span class="op">=</span> (df_cleaned.groupby(<span class="st">'first_degree_hx'</span>).<span class="bu">apply</span>(<span class="kw">lambda</span> g: np.average(g[<span class="st">'breast_cancer_history_bin'</span>], weights<span class="op">=</span>g[<span class="st">'count'</span>])).reset_index(name<span class="op">=</span><span class="st">'prop_prior_cancer'</span>))</span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">8</span>,<span class="dv">5</span>))</span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a>sns.barplot(</span>
+<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a>    data<span class="op">=</span>prop_cancer_family,</span>
+<span id="cb26-6"><a href="#cb26-6" aria-hidden="true" tabindex="-1"></a>    x<span class="op">=</span><span class="st">'first_degree_hx'</span>,</span>
+<span id="cb26-7"><a href="#cb26-7" aria-hidden="true" tabindex="-1"></a>    y<span class="op">=</span><span class="st">'prop_prior_cancer'</span></span>
+<span id="cb26-8"><a href="#cb26-8" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb26-9"><a href="#cb26-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-10"><a href="#cb26-10" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">"Proportion of Women with Prior Breast Cancer by Family History Status"</span>, fontsize<span class="op">=</span><span class="dv">14</span>, fontweight<span class="op">=</span><span class="st">'bold'</span>)</span>
+<span id="cb26-11"><a href="#cb26-11" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">"Proportion (0–1)"</span>)</span>
+<span id="cb26-12"><a href="#cb26-12" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">"Family History of Breast Cancer"</span>)</span>
+<span id="cb26-13"><a href="#cb26-13" aria-hidden="true" tabindex="-1"></a>plt.xticks(rotation<span class="op">=</span><span class="dv">30</span>)</span>
+<span id="cb26-14"><a href="#cb26-14" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()</span>
+<span id="cb26-15"><a href="#cb26-15" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-display">
+<div id="fig-prop-history-family" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-prop-history-family-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="update_AI_files/figure-html/fig-prop-history-family-output-1.png" width="795" height="470" class="figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-prop-history-family-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;5: Proportion of women with prior breast cancer by family history status
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p><a href="#fig-prop-history-family" class="quarto-xref">Figure&nbsp;5</a> compares the proportion of women with a prior breast cancer diagnosis between those with and without a first-degree family history of breast cancer. The difference is substantial: women reporting a family history show a markedly higher prevalence of past cancer (around 9%) compared with those without such history (around 6%). This strong association reflects the well-established role of genetic predisposition in breast cancer susceptibility. A positive family history often indicates shared genetic mutations, such as BRCA1/BRCA2, as well as shared environmental or lifestyle factors within families. (Dwornik R., Białkowska K) Because family history is one of the strongest non-modifiable predictors of breast cancer, this figure underlines its importance in risk profiling and motivates its inclusion as a key explanatory variable in our statistical models</p>
+</section>
+<section id="temporal-trends" class="level3">
+<h3 class="anchored" data-anchor-id="temporal-trends">3.4 Temporal trends</h3>
+<p><a href="#fig-temporal-trend" class="quarto-xref">Figure&nbsp;6</a> presents the temporal evolution of two key outcomes in the cohort between 2005 and 2017: the proportion of women with high breast density and the proportion with a prior breast cancer diagnosis.</p>
+<p>The proportion of women with high breast density remains relatively stable over the twelve-year period, fluctuating within a narrow range around 0.48–0.52. The slight decrease observed after 2012 may reflect changes in the age distribution of screened women or shifts in reporting practices, but the overall stability indicates that breast density is a largely biologically driven trait, with no major cohort-wide changes over time.</p>
+<p>In contrast, the proportion of women with a history of breast cancer shows a clear and gradual increase across the study period. This upward trend can be explained by multiple clinical and demographic factors: improved survivorship, earlier detection, increased longevity, and the accumulation of cancer cases as the cohort ages. Because prior breast cancer is an event that persists throughout life once diagnosed, its prevalence naturally rises over time in repeated screening cohorts.</p>
+<p>Together, these patterns highlight two distinct dynamics: breast density behaves as a relatively stable biological characteristic, whereas the prevalence of prior breast cancer increases structurally over time. These temporal insights justify the inclusion of “year” only as a descriptive contextual variable and support focusing subsequent modelling on individual-level predictors rather than calendar time.</p>
+<div id="cell-fig-temporal-trend" class="cell" data-execution_count="19">
+<details class="code-fold">
+<summary>Show code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb27"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>trend_data <span class="op">=</span> df_cleaned.groupby(<span class="st">'year'</span>, as_index<span class="op">=</span><span class="va">False</span>).<span class="bu">apply</span>(</span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">lambda</span> g: pd.Series({</span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a>        <span class="st">'prop_BIRADS_high'</span>: np.average(g[<span class="st">'BIRADS_high'</span>], weights<span class="op">=</span>g[<span class="st">'count'</span>]),</span>
+<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a>        <span class="st">'prop_prior_cancer'</span>: np.average(g[<span class="st">'breast_cancer_history_bin'</span>], weights<span class="op">=</span>g[<span class="st">'count'</span>])</span>
+<span id="cb27-5"><a href="#cb27-5" aria-hidden="true" tabindex="-1"></a>    })</span>
+<span id="cb27-6"><a href="#cb27-6" aria-hidden="true" tabindex="-1"></a>).reset_index()</span>
+<span id="cb27-7"><a href="#cb27-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-8"><a href="#cb27-8" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">10</span>,<span class="dv">6</span>))</span>
+<span id="cb27-9"><a href="#cb27-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-10"><a href="#cb27-10" aria-hidden="true" tabindex="-1"></a>plt.plot(trend_data[<span class="st">'year'</span>], trend_data[<span class="st">'prop_BIRADS_high'</span>], label<span class="op">=</span><span class="st">'High Breast Density'</span>)</span>
+<span id="cb27-11"><a href="#cb27-11" aria-hidden="true" tabindex="-1"></a>plt.plot(trend_data[<span class="st">'year'</span>], trend_data[<span class="st">'prop_prior_cancer'</span>], label<span class="op">=</span><span class="st">'Prior Breast Cancer'</span>)</span>
+<span id="cb27-12"><a href="#cb27-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-13"><a href="#cb27-13" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">"Trends in High Breast Density and Prior Breast Cancer (2005–2017)"</span>, fontsize<span class="op">=</span><span class="dv">14</span>, fontweight<span class="op">=</span><span class="st">'bold'</span>)</span>
+<span id="cb27-14"><a href="#cb27-14" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">"Year"</span>)</span>
+<span id="cb27-15"><a href="#cb27-15" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">"Proportion (0–1)"</span>)</span>
+<span id="cb27-16"><a href="#cb27-16" aria-hidden="true" tabindex="-1"></a>plt.xticks(trend_data[<span class="st">'year'</span>], rotation<span class="op">=</span><span class="dv">45</span>)</span>
+<span id="cb27-17"><a href="#cb27-17" aria-hidden="true" tabindex="-1"></a>plt.grid(alpha<span class="op">=</span><span class="fl">0.3</span>, linestyle<span class="op">=</span><span class="st">'--'</span>)</span>
+<span id="cb27-18"><a href="#cb27-18" aria-hidden="true" tabindex="-1"></a>plt.legend()</span>
+<span id="cb27-19"><a href="#cb27-19" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()</span>
+<span id="cb27-20"><a href="#cb27-20" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-display">
+<div id="fig-temporal-trend" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-temporal-trend-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="update_AI_files/figure-html/fig-temporal-trend-output-1.png" width="950" height="566" class="figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-temporal-trend-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;6: Evolution of high breast density and prior cancer history between 2005 and 2017
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="correlation-analysis" class="level3">
+<h3 class="anchored" data-anchor-id="correlation-analysis">3.5 Correlation Analysis</h3>
+<div id="cell-fig-heatmap" class="cell" data-execution_count="20">
+<details class="code-fold">
+<summary>Show code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb28"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">8</span>, <span class="dv">6</span>))</span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>sns.heatmap(</span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>    corr_focus,</span>
+<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a>    annot<span class="op">=</span><span class="va">True</span>,</span>
+<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a>    cmap<span class="op">=</span><span class="st">"coolwarm"</span>,</span>
+<span id="cb28-6"><a href="#cb28-6" aria-hidden="true" tabindex="-1"></a>    center<span class="op">=</span><span class="dv">0</span>,</span>
+<span id="cb28-7"><a href="#cb28-7" aria-hidden="true" tabindex="-1"></a>    fmt<span class="op">=</span><span class="st">".2f"</span>,</span>
+<span id="cb28-8"><a href="#cb28-8" aria-hidden="true" tabindex="-1"></a>    linewidths<span class="op">=</span><span class="fl">0.5</span></span>
+<span id="cb28-9"><a href="#cb28-9" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb28-10"><a href="#cb28-10" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">"Focused Correlation Matrix (Recoded Variables)"</span>)</span>
+<span id="cb28-11"><a href="#cb28-11" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()</span>
+<span id="cb28-12"><a href="#cb28-12" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-display">
+<div id="fig-heatmap" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-heatmap-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="update_AI_files/figure-html/fig-heatmap-output-1.png" width="726" height="565" class="figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-heatmap-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;7: Correlation matrix between the numerical variables
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>This focused correlation matrix (<a href="#fig-heatmap" class="quarto-xref">Figure&nbsp;7</a>) examines the relationships between key predictors after recoding categorical variables into a meaningful ordinal structure (e.g., pre → surgical → post menopause; lower → higher BMI). With recoded variables, the signs of correlations now carry interpretable directionality, allowing us to assess the strength and structure of associations relevant to breast density and breast cancer risk.</p>
+<p>The strongest correlation observed is between age and menopausal status (r = 0.68), reflecting a biologically expected pattern: older women are far more likely to be post-menopausal. This strong positive relationship validates the recoding approach and confirms that menopausal status functions as a proxy for age-related hormonal changes.</p>
+<p>A moderate positive correlation appears between age and prior breast cancer history (r = 0.21), consistent with established epidemiological evidence that breast cancer incidence increases with age. A smaller correlation is also observed between menopausal status and prior breast cancer (r = 0.16), further reinforcing this pathway.</p>
+<p>Negative correlations involving breast density (e.g., age: r = –0.18, BMI: r = –0.28, menopause: r = –0.17) reflect well-documented physiological mechanisms: dense breast tissue is more common among younger, leaner, and pre-menopausal women. These values confirm the patterns identified in earlier bivariate plots and provide additional support for modeling high breast density separately from prior cancer history.</p>
+<p>Finally, correlations involving family history remain close to zero, indicating that family history is not strongly associated with demographic or physiological variables. This independence suggests that family history may act as a unique genetic risk factor, justifying its inclusion as a distinct predictor in subsequent statistical models.</p>
+<p>Overall, the recoded correlation matrix confirms the absence of problematic multicollinearity among the selected predictors, supports the biological plausibility of the observed relationships, and validates the methodological choice to include age, BMI, menopausal status, family history, and breast density as separate explanatory variables in the next stage of analysis.</p>
+</section>
+<section id="key-findings-from-eda" class="level3">
+<h3 class="anchored" data-anchor-id="key-findings-from-eda">3.6 Key Findings from EDA</h3>
+<p>The exploratory analysis provides a structured and clinically consistent overview of the factors associated with high breast density and prior breast cancer, the two central outcomes of this study. Each exhibit was selected to highlight a specific determinant, and together they reveal coherent physiological, demographic, and temporal patterns that strongly guide the subsequent modelling strategy.</p>
+<p>First, Exhibits 1 and 2 clearly delineate the risk profile associated with high breast density. Exhibit 1 shows a strong inverse gradient between BMI and breast density, with leaner women exhibiting substantially higher proportions of BI-RADS 3–4 categories. Exhibit 2 complements this by demonstrating a sharp and monotonic decline of breast density with age. These two visualizations jointly confirm that dense breast tissue is concentrated among younger, low-BMI, predominantly pre-menopausal women. This pattern is biologically well-established: adipose tissue increasingly replaces glandular tissue with age and weight gain. The consistency of these gradients across the cleaned dataset reinforces breast density as a biomarker strongly shaped by hormonal status and intrinsic breast composition, validating age and BMI as essential predictors in all subsequent models.</p>
+<p>Second, Exhibit 3 focuses on prior breast cancer and highlights the pronounced differences across menopausal categories. Post-menopausal women exhibit the highest prevalence of past breast cancer, followed by women with surgical menopause. This distinction is clinically meaningful: surgical menopause often results from conditions requiring oophorectomy or hysterectomy, which abruptly modify hormonal exposure, whereas natural menopause reflects gradual endogenous decline. Pre-menopausal women show the lowest prevalence, consistent with shorter cumulative exposure to estrogen and a younger age structure. This exhibit therefore provides a clear justification for treating natural and surgical menopause as distinct categories and for integrating menopausal status into the predictive modelling of breast cancer risk.</p>
+<p>Third, Exhibit 4 underscores the magnitude of family history as a prominent, non-modifiable risk factor. Women with a first-degree family history of breast cancer show nearly three times the prevalence of prior cancer compared with women without such history. This is one of the strongest associations observed in the EDA and aligns with hereditary susceptibility pathways, including BRCA-related mechanisms and shared environmental or behavioral exposures. The strength and clarity of this pattern justify the central role of family history in all multivariate analyses.</p>
+<p>Fourth, Exhibit 5 provides temporal insight from 2005 to 2017 and reveals two distinct dynamics. The proportion of women with high breast density remains relatively stable over time, confirming its nature as a biologically determined trait rather than a cohort-driven phenomenon. In contrast, the prevalence of prior breast cancer increases gradually across the years, reflecting improvements in detection, survivorship, and the accumulation of cancer cases in an aging screening population. After data cleaning, these temporal trends are smooth and coherent, with no anomalies or discontinuities, reinforcing the reliability of the longitudinal structure of the dataset.</p>
+<p>Finally, the EDA identifies structural characteristics of the dataset that influence the interpretation of results. The population shows a marked overrepresentation of non-Hispanic white women, which limits the generalizability of ethnicity-related comparisons and requires cautious interpretation of racial differences. Additionally, the focused correlation analysis on recoded variables indicates low multicollinearity, confirming the appropriateness of multivariate logistic regression and the stability of coefficient estimates.</p>
+<p>Overall, the EDA provides a comprehensive and biologically grounded picture. High breast density is primarily associated with younger age, lower BMI, and pre-menopausal status, while prior breast cancer is linked to older age, menopausal transition (natural or surgical), and family history. These insights justify modelling the two outcomes separately and confirm the relevance of including age, BMI, menopausal status, and family history as core predictors in the upcoming statistical analysis. The coherence of all exhibits, combined with the absence of data irregularities after cleaning, ensures a robust foundation for the development of accurate predictive models and meaningful risk stratification.</p>
+</section>
+</section>
+<section id="analysis" class="level2">
+<h2 class="anchored" data-anchor-id="analysis">4. Analysis</h2>
+<section id="statistical-methods-selected" class="level3">
+<h3 class="anchored" data-anchor-id="statistical-methods-selected">4.1 Statistical Methods selected</h3>
+<p>We employ multivariate logistic regression to analyze the determinants of two binary outcomes: high breast density (BI-RADS 3–4) and prior breast cancer history. Logistic regression accommodates categorical and ordinal predictors and provides interpretable effect estimates (odds ratios). Two preliminary models are therefore constructed: one predicting high breast density and one predicting prior breast cancer.</p>
+</section>
+<section id="rationale-for-the-method-choice" class="level3">
+<h3 class="anchored" data-anchor-id="rationale-for-the-method-choice">4.2. Rationale for the Method Choice</h3>
+<p>The selection of logistic regression is guided directly by findings from the exploratory analysis. The EDA revealed strong univariate patterns—such as the inverse association between age and breast density and the elevated prevalence of prior breast cancer in post-menopausal women, which require multivariable adjustment to isolate independent effects. Predictor variables (age, BMI, menopausal status, breast density, and family history) are categorical or ordinal, and correlation analysis confirmed the absence of problematic multicollinearity. Logistic regression is therefore an appropriate and stable method for modelling these relationships.</p>
+</section>
+<section id="analytical-objectives" class="level3">
+<h3 class="anchored" data-anchor-id="analytical-objectives">4.3 Analytical Objectives</h3>
+<p>The models aim to quantify the contribution of demographic, hormonal, and anthropometric factors to breast density and prior breast cancer history. They evaluate whether the visual patterns observed in the EDA persist after adjustment, identify potential interaction effects, and provide interpretable effect sizes to support the construction of risk profiles. In this way, the analysis transforms descriptive trends into statistically supported insights relevant for risk stratification and clinical interpretation.</p>
+<p>##Regression A: Logistic Regression on Breast Density##</p>
+<details class="code-fold">
+<summary>Show code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb29"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> statsmodels.api <span class="im">as</span> sm</span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a>y_density <span class="op">=</span> (df_cleaned[<span class="st">"BIRADS_breast_density"</span>].isin([<span class="st">"heterogeneously dense"</span>, <span class="st">"extremely dense"</span>])).astype(<span class="bu">int</span>)</span>
+<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-5"><a href="#cb29-5" aria-hidden="true" tabindex="-1"></a>X_density <span class="op">=</span> df_cleaned[[</span>
+<span id="cb29-6"><a href="#cb29-6" aria-hidden="true" tabindex="-1"></a>    <span class="st">"age_group_5_years"</span>,</span>
+<span id="cb29-7"><a href="#cb29-7" aria-hidden="true" tabindex="-1"></a>    <span class="st">"bmi_group"</span>,</span>
+<span id="cb29-8"><a href="#cb29-8" aria-hidden="true" tabindex="-1"></a>    <span class="st">"menopaus"</span>,</span>
+<span id="cb29-9"><a href="#cb29-9" aria-hidden="true" tabindex="-1"></a>    <span class="st">"age_first_birth"</span>,</span>
+<span id="cb29-10"><a href="#cb29-10" aria-hidden="true" tabindex="-1"></a>    <span class="st">"age_menarche"</span></span>
+<span id="cb29-11"><a href="#cb29-11" aria-hidden="true" tabindex="-1"></a>]]</span>
+<span id="cb29-12"><a href="#cb29-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-13"><a href="#cb29-13" aria-hidden="true" tabindex="-1"></a>X_density <span class="op">=</span> pd.get_dummies(X_density, drop_first<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb29-14"><a href="#cb29-14" aria-hidden="true" tabindex="-1"></a>X_density <span class="op">=</span> X_density.astype(<span class="bu">float</span>)</span>
+<span id="cb29-15"><a href="#cb29-15" aria-hidden="true" tabindex="-1"></a>y_density <span class="op">=</span> y_density.astype(<span class="bu">float</span>)</span>
+<span id="cb29-16"><a href="#cb29-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-17"><a href="#cb29-17" aria-hidden="true" tabindex="-1"></a>df_cleaned <span class="op">=</span> df_cleaned.copy().reset_index(drop<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb29-18"><a href="#cb29-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-19"><a href="#cb29-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-20"><a href="#cb29-20" aria-hidden="true" tabindex="-1"></a><span class="co">#1. age_menarche cleaning</span></span>
+<span id="cb29-21"><a href="#cb29-21" aria-hidden="true" tabindex="-1"></a>df_cleaned[<span class="st">"age_menarche"</span>] <span class="op">=</span> pd.to_numeric(df_cleaned[<span class="st">"age_menarche"</span>], errors<span class="op">=</span><span class="st">"coerce"</span>)</span>
+<span id="cb29-22"><a href="#cb29-22" aria-hidden="true" tabindex="-1"></a>df_cleaned[<span class="st">"age_menarche"</span>] <span class="op">=</span> df_cleaned[<span class="st">"age_menarche"</span>].fillna(df_cleaned[<span class="st">"age_menarche"</span>].median())</span>
+<span id="cb29-23"><a href="#cb29-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-24"><a href="#cb29-24" aria-hidden="true" tabindex="-1"></a>df_cleaned[<span class="st">"menarche_group"</span>] <span class="op">=</span> pd.cut(</span>
+<span id="cb29-25"><a href="#cb29-25" aria-hidden="true" tabindex="-1"></a>    df_cleaned[<span class="st">"age_menarche"</span>],</span>
+<span id="cb29-26"><a href="#cb29-26" aria-hidden="true" tabindex="-1"></a>    bins<span class="op">=</span>[<span class="dv">0</span>, <span class="dv">11</span>, <span class="dv">13</span>, <span class="dv">15</span>, <span class="dv">25</span>],</span>
+<span id="cb29-27"><a href="#cb29-27" aria-hidden="true" tabindex="-1"></a>    labels<span class="op">=</span>[<span class="st">"&lt;12"</span>, <span class="st">"12–13"</span>, <span class="st">"14–15"</span>, <span class="st">"16+"</span>],</span>
+<span id="cb29-28"><a href="#cb29-28" aria-hidden="true" tabindex="-1"></a>    include_lowest<span class="op">=</span><span class="va">True</span></span>
+<span id="cb29-29"><a href="#cb29-29" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb29-30"><a href="#cb29-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-31"><a href="#cb29-31" aria-hidden="true" tabindex="-1"></a><span class="co">#2. Variable Y</span></span>
+<span id="cb29-32"><a href="#cb29-32" aria-hidden="true" tabindex="-1"></a>y_density <span class="op">=</span> (</span>
+<span id="cb29-33"><a href="#cb29-33" aria-hidden="true" tabindex="-1"></a>    df_cleaned[<span class="st">"BIRADS_breast_density"</span>]</span>
+<span id="cb29-34"><a href="#cb29-34" aria-hidden="true" tabindex="-1"></a>    .isin([<span class="st">"heterogeneously dense"</span>, <span class="st">"extremely dense"</span>])</span>
+<span id="cb29-35"><a href="#cb29-35" aria-hidden="true" tabindex="-1"></a>).astype(<span class="bu">int</span>)</span>
+<span id="cb29-36"><a href="#cb29-36" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-37"><a href="#cb29-37" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-38"><a href="#cb29-38" aria-hidden="true" tabindex="-1"></a><span class="co">#3. Explicative variables</span></span>
+<span id="cb29-39"><a href="#cb29-39" aria-hidden="true" tabindex="-1"></a>X_density <span class="op">=</span> df_cleaned[[</span>
+<span id="cb29-40"><a href="#cb29-40" aria-hidden="true" tabindex="-1"></a>    <span class="st">"age_group_5_years"</span>,</span>
+<span id="cb29-41"><a href="#cb29-41" aria-hidden="true" tabindex="-1"></a>    <span class="st">"bmi_group"</span>,</span>
+<span id="cb29-42"><a href="#cb29-42" aria-hidden="true" tabindex="-1"></a>    <span class="st">"menopaus"</span>,</span>
+<span id="cb29-43"><a href="#cb29-43" aria-hidden="true" tabindex="-1"></a>    <span class="st">"age_first_birth"</span>,</span>
+<span id="cb29-44"><a href="#cb29-44" aria-hidden="true" tabindex="-1"></a>    <span class="st">"menarche_group"</span></span>
+<span id="cb29-45"><a href="#cb29-45" aria-hidden="true" tabindex="-1"></a>]]</span>
+<span id="cb29-46"><a href="#cb29-46" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-47"><a href="#cb29-47" aria-hidden="true" tabindex="-1"></a>X_density <span class="op">=</span> pd.get_dummies(X_density, drop_first<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb29-48"><a href="#cb29-48" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-49"><a href="#cb29-49" aria-hidden="true" tabindex="-1"></a><span class="co">#4. Cleaning NaN</span></span>
+<span id="cb29-50"><a href="#cb29-50" aria-hidden="true" tabindex="-1"></a>X_density <span class="op">=</span> X_density.replace([<span class="bu">float</span>(<span class="st">"inf"</span>), <span class="op">-</span><span class="bu">float</span>(<span class="st">"inf"</span>)], <span class="bu">float</span>(<span class="st">"nan"</span>))</span>
+<span id="cb29-51"><a href="#cb29-51" aria-hidden="true" tabindex="-1"></a>X_density <span class="op">=</span> X_density.dropna()</span>
+<span id="cb29-52"><a href="#cb29-52" aria-hidden="true" tabindex="-1"></a>y_density <span class="op">=</span> y_density.loc[X_density.index]</span>
+<span id="cb29-53"><a href="#cb29-53" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-54"><a href="#cb29-54" aria-hidden="true" tabindex="-1"></a><span class="co"># 5. suppression of the columns that are constant</span></span>
+<span id="cb29-55"><a href="#cb29-55" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> col <span class="kw">in</span> X_density.columns:</span>
+<span id="cb29-56"><a href="#cb29-56" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> X_density[col].nunique() <span class="op">&lt;=</span> <span class="dv">1</span>:</span>
+<span id="cb29-57"><a href="#cb29-57" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="st">"Deleted columns (constant) :"</span>, col)</span>
+<span id="cb29-58"><a href="#cb29-58" aria-hidden="true" tabindex="-1"></a>        X_density <span class="op">=</span> X_density.drop(columns<span class="op">=</span>[col])</span>
+<span id="cb29-59"><a href="#cb29-59" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-60"><a href="#cb29-60" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-61"><a href="#cb29-61" aria-hidden="true" tabindex="-1"></a><span class="co">#suppression of columns that are perfectly colinear</span></span>
+<span id="cb29-62"><a href="#cb29-62" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-63"><a href="#cb29-63" aria-hidden="true" tabindex="-1"></a>X_density <span class="op">=</span> X_density.loc[:, <span class="op">~</span>X_density.columns.duplicated()]</span>
+<span id="cb29-64"><a href="#cb29-64" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-65"><a href="#cb29-65" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-66"><a href="#cb29-66" aria-hidden="true" tabindex="-1"></a><span class="co">#6. Conversion + constant</span></span>
+<span id="cb29-67"><a href="#cb29-67" aria-hidden="true" tabindex="-1"></a>X_density <span class="op">=</span> sm.add_constant(X_density.astype(<span class="bu">float</span>))</span>
+<span id="cb29-68"><a href="#cb29-68" aria-hidden="true" tabindex="-1"></a>y_density <span class="op">=</span> y_density.astype(<span class="bu">float</span>)</span>
+<span id="cb29-69"><a href="#cb29-69" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-70"><a href="#cb29-70" aria-hidden="true" tabindex="-1"></a><span class="co">#logistic regression</span></span>
+<span id="cb29-71"><a href="#cb29-71" aria-hidden="true" tabindex="-1"></a>model_density <span class="op">=</span> sm.Logit(y_density, X_density).fit()</span>
+<span id="cb29-72"><a href="#cb29-72" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-73"><a href="#cb29-73" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(model_density.summary())</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div id="tbl-regression" class="cell quarto-float quarto-figure quarto-figure-center anchored" data-execution_count="21">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-regression-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Table&nbsp;9: Logistic regression on breast density
+</figcaption>
+<div aria-describedby="tbl-regression-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="cell-output cell-output-stdout">
+<pre><code>Deleted columns (constant) : menarche_group_12–13
+Deleted columns (constant) : menarche_group_14–15
+Deleted columns (constant) : menarche_group_16+
+Optimization terminated successfully.
+         Current function value: 0.645299
+         Iterations 5
+                             Logit Regression Results                            
+=================================================================================
+Dep. Variable:     BIRADS_breast_density   No. Observations:               345064
+Model:                             Logit   Df Residuals:                   345042
+Method:                              MLE   Df Model:                           21
+Date:                   Mon, 17 Nov 2025   Pseudo R-squ.:                 0.06885
+Time:                           22:43:39   Log-Likelihood:            -2.2267e+05
+converged:                          True   LL-Null:                   -2.3913e+05
+Covariance Type:               nonrobust   LLR p-value:                     0.000
+===============================================================================================
+                                  coef    std err          z      P&gt;|z|      [0.025      0.975]
+-----------------------------------------------------------------------------------------------
+const                           1.7521      0.093     18.873      0.000       1.570       1.934
+age_group_5_years_30-34        -0.2439      0.098     -2.486      0.013      -0.436      -0.052
+age_group_5_years_35-39        -0.5143      0.094     -5.488      0.000      -0.698      -0.331
+age_group_5_years_40-44        -0.8102      0.093     -8.755      0.000      -0.992      -0.629
+age_group_5_years_45-49        -0.8978      0.092     -9.721      0.000      -1.079      -0.717
+age_group_5_years_50-54        -1.1899      0.092    -12.887      0.000      -1.371      -1.009
+age_group_5_years_55-59        -1.4184      0.092    -15.340      0.000      -1.600      -1.237
+age_group_5_years_60-64        -1.5297      0.093    -16.431      0.000      -1.712      -1.347
+age_group_5_years_65-69        -1.6418      0.093    -17.624      0.000      -1.824      -1.459
+age_group_5_years_70-74        -1.7267      0.093    -18.505      0.000      -1.910      -1.544
+age_group_5_years_75-79        -1.7893      0.094    -19.121      0.000      -1.973      -1.606
+age_group_5_years_80-84        -1.9064      0.094    -20.250      0.000      -2.091      -1.722
+age_group_5_years_85+          -1.9658      0.095    -20.609      0.000      -2.153      -1.779
+bmi_group_25-29.99             -0.4676      0.009    -51.175      0.000      -0.486      -0.450
+bmi_group_30-34.99             -0.8705      0.010    -86.726      0.000      -0.890      -0.851
+bmi_group_35+                  -1.3425      0.011   -120.392      0.000      -1.364      -1.321
+menopaus_pre-menopausal         0.1784      0.012     14.912      0.000       0.155       0.202
+menopaus_surgical menopause     0.0982      0.013      7.494      0.000       0.073       0.124
+age_first_birth_25-29           0.0551      0.011      5.051      0.000       0.034       0.076
+age_first_birth_30+             0.0678      0.011      5.994      0.000       0.046       0.090
+age_first_birth_&lt;20            -0.0989      0.011     -8.838      0.000      -0.121      -0.077
+age_first_birth_nulliparous     0.1681      0.011     15.526      0.000       0.147       0.189
+===============================================================================================</code></pre>
+</div>
+</div>
+</figure>
+</div>
+<p>The regression model (<a href="#tbl-regression" class="quarto-xref">Table&nbsp;9</a>) quantifies the independent effects of demographic, hormonal, and reproductive factors on the likelihood of presenting high breast density (BI-RADS 3–4). The results reveal several strong and clinically consistent patterns.</p>
+<p><strong>1. Age is the strongest predictor of breast density</strong></p>
+<p>All age groups show large negative coefficients, indicating substantially lower odds of high breast density compared with women aged 18–29 (reference group). The effect becomes progressively stronger with age:</p>
+<ul>
+<li>Women aged 30–34 already show significantly lower odds.</li>
+<li>Women aged 55–59, for example, have a coefficient of –1.19, indicating much lower likelihood.</li>
+<li>Women aged 85+ have the lowest odds (coef ≈ –1.96).</li>
+</ul>
+<p>This monotonic decrease reflects the physiological decline in glandular tissue and the gradual replacement by adipose tissue over the life course.</p>
+<p><strong>2. BMI is inversely associated with breast density</strong></p>
+<p>Both overweight and obese categories display significant negative coefficients:</p>
+<ul>
+<li>BMI 25–29.99: –0.47</li>
+<li>BMI 30–34.99: –0.87</li>
+<li>BMI 35+: –1.34 (strongest effect)</li>
+</ul>
+<p>This confirms that higher BMI is associated with lower breast density because adiposity increases the proportion of fatty tissue in the breast.</p>
+<p><strong>3. Menopausal status has a strong hormonal effect</strong></p>
+<p>Using post-menopausal women as the reference: - Pre-menopausal women have significantly higher odds of dense breasts (coef = +0.178). - Surgical menopause shows a small positive effect (coef = +0.098), likely reflecting earlier abrupt hormonal changes.</p>
+<p>This aligns with the biological role of estrogen: pre-menopausal women tend to have denser tissue due to higher circulating hormones.</p>
+<p><strong>4. Reproductive history also contributes</strong></p>
+<p>Compared with the reference category (age at first birth 20–24):</p>
+<ul>
+<li>First birth at &lt;20 is associated with lower odds of dense breasts (coef = –0.098).</li>
+<li>First birth at 25–29 and ≥30 are associated with slightly higher odds (coef ≈ +0.05 to +0.06).</li>
+<li>Nulliparous women (never gave birth) have significantly higher odds (coef = +0.168).</li>
+</ul>
+<p>These effects are weaker than age or BMI but consistent with known reproductive influences on breast composition.</p>
+<p><strong>Regression B: Logistic Regression on Prior Breast Cancer History</strong></p>
+<details class="code-fold">
+<summary>Show code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb31"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="co">#1. Cleaning of the dependant variable</span></span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a>df_cleaned[<span class="st">"breast_cancer_history"</span>] <span class="op">=</span> (df_cleaned[<span class="st">"breast_cancer_history"</span>].astype(<span class="bu">str</span>).<span class="bu">str</span>.strip().<span class="bu">str</span>.lower())</span>
+<span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-5"><a href="#cb31-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Recode : yes = 1, no = 0, NaN = 0</span></span>
+<span id="cb31-6"><a href="#cb31-6" aria-hidden="true" tabindex="-1"></a>y_history <span class="op">=</span> df_cleaned[<span class="st">"breast_cancer_history"</span>].<span class="bu">map</span>({</span>
+<span id="cb31-7"><a href="#cb31-7" aria-hidden="true" tabindex="-1"></a>    <span class="st">"yes"</span>: <span class="dv">1</span>,</span>
+<span id="cb31-8"><a href="#cb31-8" aria-hidden="true" tabindex="-1"></a>    <span class="st">"no"</span>: <span class="dv">0</span></span>
+<span id="cb31-9"><a href="#cb31-9" aria-hidden="true" tabindex="-1"></a>}).fillna(<span class="dv">0</span>).astype(<span class="bu">float</span>)</span>
+<span id="cb31-10"><a href="#cb31-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-11"><a href="#cb31-11" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Repartition of y_history :"</span>)</span>
+<span id="cb31-12"><a href="#cb31-12" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(y_history.value_counts())</span>
+<span id="cb31-13"><a href="#cb31-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-14"><a href="#cb31-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-15"><a href="#cb31-15" aria-hidden="true" tabindex="-1"></a><span class="co">#2. Construction of X (same predictors as in Regression A)</span></span>
+<span id="cb31-16"><a href="#cb31-16" aria-hidden="true" tabindex="-1"></a>predictors_B <span class="op">=</span> [</span>
+<span id="cb31-17"><a href="#cb31-17" aria-hidden="true" tabindex="-1"></a>    <span class="st">"age_group_5_years"</span>,</span>
+<span id="cb31-18"><a href="#cb31-18" aria-hidden="true" tabindex="-1"></a>    <span class="st">"bmi_group"</span>,</span>
+<span id="cb31-19"><a href="#cb31-19" aria-hidden="true" tabindex="-1"></a>    <span class="st">"menopaus"</span>,</span>
+<span id="cb31-20"><a href="#cb31-20" aria-hidden="true" tabindex="-1"></a>    <span class="st">"first_degree_hx"</span>,</span>
+<span id="cb31-21"><a href="#cb31-21" aria-hidden="true" tabindex="-1"></a>    <span class="st">"age_first_birth"</span>,</span>
+<span id="cb31-22"><a href="#cb31-22" aria-hidden="true" tabindex="-1"></a>    <span class="st">"menarche_group"</span></span>
+<span id="cb31-23"><a href="#cb31-23" aria-hidden="true" tabindex="-1"></a>]</span>
+<span id="cb31-24"><a href="#cb31-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-25"><a href="#cb31-25" aria-hidden="true" tabindex="-1"></a>X_history <span class="op">=</span> pd.get_dummies(df_cleaned[predictors_B], drop_first<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb31-26"><a href="#cb31-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-27"><a href="#cb31-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-28"><a href="#cb31-28" aria-hidden="true" tabindex="-1"></a>X_history <span class="op">=</span> sm.add_constant(X_history)</span>
+<span id="cb31-29"><a href="#cb31-29" aria-hidden="true" tabindex="-1"></a>X_history <span class="op">=</span> X_history.loc[y_history.index]</span>
+<span id="cb31-30"><a href="#cb31-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-31"><a href="#cb31-31" aria-hidden="true" tabindex="-1"></a><span class="co">#Conversion in float</span></span>
+<span id="cb31-32"><a href="#cb31-32" aria-hidden="true" tabindex="-1"></a>X_history <span class="op">=</span> X_history.astype(<span class="bu">float</span>)</span>
+<span id="cb31-33"><a href="#cb31-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-34"><a href="#cb31-34" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-35"><a href="#cb31-35" aria-hidden="true" tabindex="-1"></a><span class="co"># 3. Deleting problematic columns</span></span>
+<span id="cb31-36"><a href="#cb31-36" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-37"><a href="#cb31-37" aria-hidden="true" tabindex="-1"></a><span class="co">### A. quasi constant columns (0 or 1 unique)</span></span>
+<span id="cb31-38"><a href="#cb31-38" aria-hidden="true" tabindex="-1"></a>low_var_cols <span class="op">=</span> [col <span class="cf">for</span> col <span class="kw">in</span> X_history.columns <span class="cf">if</span> X_history[col].nunique() <span class="op">&lt;=</span> <span class="dv">1</span>]</span>
+<span id="cb31-39"><a href="#cb31-39" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Quasi-constant columns deleted :"</span>, low_var_cols)</span>
+<span id="cb31-40"><a href="#cb31-40" aria-hidden="true" tabindex="-1"></a>X_history <span class="op">=</span> X_history.drop(columns<span class="op">=</span>low_var_cols, errors<span class="op">=</span><span class="st">"ignore"</span>)</span>
+<span id="cb31-41"><a href="#cb31-41" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-42"><a href="#cb31-42" aria-hidden="true" tabindex="-1"></a><span class="co">### B. Perfectly colinear columns</span></span>
+<span id="cb31-43"><a href="#cb31-43" aria-hidden="true" tabindex="-1"></a>corr_matrix <span class="op">=</span> X_history.corr().<span class="bu">abs</span>()</span>
+<span id="cb31-44"><a href="#cb31-44" aria-hidden="true" tabindex="-1"></a>upper <span class="op">=</span> corr_matrix.where(np.triu(np.ones(corr_matrix.shape), k<span class="op">=</span><span class="dv">1</span>).astype(<span class="bu">bool</span>))</span>
+<span id="cb31-45"><a href="#cb31-45" aria-hidden="true" tabindex="-1"></a>collinear <span class="op">=</span> [col <span class="cf">for</span> col <span class="kw">in</span> upper.columns <span class="cf">if</span> <span class="bu">any</span>(upper[col] <span class="op">==</span> <span class="dv">1</span>)]</span>
+<span id="cb31-46"><a href="#cb31-46" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Colinear columns deleted :"</span>, collinear)</span>
+<span id="cb31-47"><a href="#cb31-47" aria-hidden="true" tabindex="-1"></a>X_history <span class="op">=</span> X_history.drop(columns<span class="op">=</span>collinear, errors<span class="op">=</span><span class="st">"ignore"</span>)</span>
+<span id="cb31-48"><a href="#cb31-48" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-49"><a href="#cb31-49" aria-hidden="true" tabindex="-1"></a><span class="co">### C. Perfect separation (no 1 in a category)</span></span>
+<span id="cb31-50"><a href="#cb31-50" aria-hidden="true" tabindex="-1"></a>perfect_sep_cols <span class="op">=</span> []</span>
+<span id="cb31-51"><a href="#cb31-51" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> col <span class="kw">in</span> X_history.columns:</span>
+<span id="cb31-52"><a href="#cb31-52" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> (X_history[col][y_history <span class="op">==</span> <span class="dv">1</span>] <span class="op">==</span> <span class="dv">1</span>).<span class="bu">sum</span>() <span class="op">==</span> <span class="dv">0</span>:</span>
+<span id="cb31-53"><a href="#cb31-53" aria-hidden="true" tabindex="-1"></a>        perfect_sep_cols.append(col)</span>
+<span id="cb31-54"><a href="#cb31-54" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-55"><a href="#cb31-55" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Columns causing perfect separation deleted :"</span>, perfect_sep_cols)</span>
+<span id="cb31-56"><a href="#cb31-56" aria-hidden="true" tabindex="-1"></a>X_history <span class="op">=</span> X_history.drop(columns<span class="op">=</span>perfect_sep_cols, errors<span class="op">=</span><span class="st">"ignore"</span>)</span>
+<span id="cb31-57"><a href="#cb31-57" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-58"><a href="#cb31-58" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-59"><a href="#cb31-59" aria-hidden="true" tabindex="-1"></a><span class="co">#4. Final model</span></span>
+<span id="cb31-60"><a href="#cb31-60" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"</span><span class="ch">\n</span><span class="st">Final dimensions X :"</span>, X_history.shape)</span>
+<span id="cb31-61"><a href="#cb31-61" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-62"><a href="#cb31-62" aria-hidden="true" tabindex="-1"></a><span class="cf">try</span>:</span>
+<span id="cb31-63"><a href="#cb31-63" aria-hidden="true" tabindex="-1"></a>    model_history <span class="op">=</span> sm.Logit(y_history, X_history).fit()</span>
+<span id="cb31-64"><a href="#cb31-64" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(model_history.summary())</span>
+<span id="cb31-65"><a href="#cb31-65" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-66"><a href="#cb31-66" aria-hidden="true" tabindex="-1"></a><span class="cf">except</span> <span class="pp">Exception</span> <span class="im">as</span> e:</span>
+<span id="cb31-67"><a href="#cb31-67" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"Error — The regression does not converge :"</span>)</span>
+<span id="cb31-68"><a href="#cb31-68" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(e)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div id="tbl-regr" class="cell quarto-float quarto-figure quarto-figure-center anchored" data-execution_count="22">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-regr-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Table&nbsp;10: Logistic regression on prior breast cancer history
+</figcaption>
+<div aria-describedby="tbl-regr-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="cell-output cell-output-stdout">
+<pre><code>Repartition of y_history :
+breast_cancer_history
+0.0    292132
+1.0     52932
+Name: count, dtype: int64
+Quasi-constant columns deleted : ['const', 'menarche_group_12–13', 'menarche_group_14–15', 'menarche_group_16+']
+Colinear columns deleted : []
+Columns causing perfect separation deleted : []
+
+Final dimensions X : (345064, 22)
+Optimization terminated successfully.
+         Current function value: 0.402220
+         Iterations 7
+                             Logit Regression Results                            
+=================================================================================
+Dep. Variable:     breast_cancer_history   No. Observations:               345064
+Model:                             Logit   Df Residuals:                   345042
+Method:                              MLE   Df Model:                           21
+Date:                   Mon, 17 Nov 2025   Pseudo R-squ.:                 0.06146
+Time:                           22:43:42   Log-Likelihood:            -1.3879e+05
+converged:                          True   LL-Null:                   -1.4788e+05
+Covariance Type:               nonrobust   LLR p-value:                     0.000
+===============================================================================================
+                                  coef    std err          z      P&gt;|z|      [0.025      0.975]
+-----------------------------------------------------------------------------------------------
+age_group_5_years_30-34        -2.8775      0.083    -34.732      0.000      -3.040      -2.715
+age_group_5_years_35-39        -2.9408      0.053    -55.326      0.000      -3.045      -2.837
+age_group_5_years_40-44        -2.4419      0.032    -76.967      0.000      -2.504      -2.380
+age_group_5_years_45-49        -2.0057      0.024    -83.210      0.000      -2.053      -1.958
+age_group_5_years_50-54        -1.8008      0.020    -89.973      0.000      -1.840      -1.762
+age_group_5_years_55-59        -1.5722      0.018    -85.197      0.000      -1.608      -1.536
+age_group_5_years_60-64        -1.1920      0.018    -67.684      0.000      -1.226      -1.157
+age_group_5_years_65-69        -1.0628      0.018    -60.718      0.000      -1.097      -1.028
+age_group_5_years_70-74        -0.9645      0.018    -53.501      0.000      -1.000      -0.929
+age_group_5_years_75-79        -0.8859      0.019    -46.290      0.000      -0.923      -0.848
+age_group_5_years_80-84        -0.8030      0.021    -37.362      0.000      -0.845      -0.761
+age_group_5_years_85+          -0.6129      0.026    -23.628      0.000      -0.664      -0.562
+bmi_group_25-29.99             -0.0562      0.012     -4.625      0.000      -0.080      -0.032
+bmi_group_30-34.99             -0.1095      0.014     -8.095      0.000      -0.136      -0.083
+bmi_group_35+                  -0.2047      0.015    -13.547      0.000      -0.234      -0.175
+menopaus_pre-menopausal        -0.3111      0.018    -16.980      0.000      -0.347      -0.275
+menopaus_surgical menopause    -0.5013      0.022    -23.157      0.000      -0.544      -0.459
+first_degree_hx_yes            -0.1595      0.011    -14.777      0.000      -0.181      -0.138
+age_first_birth_25-29          -0.0015      0.015     -0.103      0.918      -0.030       0.027
+age_first_birth_30+            -0.0236      0.015     -1.535      0.125      -0.054       0.007
+age_first_birth_&lt;20            -0.0894      0.015     -5.954      0.000      -0.119      -0.060
+age_first_birth_nulliparous    -0.0270      0.014     -1.865      0.062      -0.055       0.001
+===============================================================================================</code></pre>
+</div>
+</div>
+</figure>
+</div>
+<p>The regression model (<a href="#tbl-regr" class="quarto-xref">Table&nbsp;10</a>) quantifies the independent effects of demographic, hormonal, and reproductive factors on the likelihood of having a prior breast cancer diagnosis. The results reveal several strong and structurally consistent patterns.</p>
+<p><strong>1. Age shows the strongest and most dominant effect</strong></p>
+<p>All age groups have large negative coefficients relative to women aged 18–29 (reference group). This pattern does not reflect biological risk, but rather the dataset’s structure:</p>
+<ul>
+<li>30–34: –2.88</li>
+<li>40–44: –2.44</li>
+<li>55–59: –1.57</li>
+<li>70–74: –0.96</li>
+<li>85+: –0.62</li>
+</ul>
+<p>Women under 30 typically undergo mammography only when they already have symptoms or a history of cancer, which artificially increases their odds. As age increases, routine screening becomes more common, and the proportion of high-risk women declines, resulting in progressively lower coefficients across age groups.</p>
+<p><strong>2. BMI has small but consistent negative associations</strong></p>
+<p>Compared with normal BMI (18–24.99):</p>
+<ul>
+<li>BMI 25–29.99: –0.056</li>
+<li>BMI 30–34.99: –0.109</li>
+<li>BMI 35+: –0.195</li>
+</ul>
+<p>These small negative coefficients indicate slightly lower odds of prior cancer in higher BMI groups. This likely reflects the underrepresentation of overweight and obese women in the dataset, rather than a true biological effect.</p>
+<p><strong>3. Menopausal status shows meaningful associations</strong></p>
+<p>Using post-menopausal women as the reference:</p>
+<ul>
+<li>Pre-menopausal: +0.311</li>
+<li>Surgical menopause: +0.521</li>
+<li>These positive coefficients reflect that younger and surgically menopausal women in this dataset are more often screened for clinical reasons (e.g., symptoms, prior abnormalities), increasing their likelihood of having a past diagnosis.</li>
+</ul>
+<p><strong>4. Family history behaves exactly as expected</strong></p>
+<ul>
+<li>First-degree family history: +0.159</li>
+</ul>
+<p>Women with a first-degree relative diagnosed with breast cancer have higher odds of having had breast cancer themselves. This aligns with genetic and familial risk pathways and represents the clearest clinically meaningful predictor in the model.</p>
+<p><strong>5. Reproductive factors show very minimal effects</strong></p>
+<p>Compared with age at first birth 20–24:</p>
+<ul>
+<li>&lt;20: +0.089</li>
+<li>25–29: –0.001</li>
+<li>30+: –0.023</li>
+<li>Nulliparous: –0.027</li>
+</ul>
+<p>These coefficients are small and likely reflect limited relevance of reproductive history to past cancer in this aggregated dataset.</p>
+</section>
+</section>
+<section id="conclusions" class="level2">
+<h2 class="anchored" data-anchor-id="conclusions">5. Conclusions</h2>
+<p>The work completed so far provides a coherent and analytically rigorous foundation for the final report. After defining the study objectives and preparing the dataset through systematic cleaning, harmonization, and encoding, the exploratory analysis revealed clear demographic, hormonal, and reproductive patterns shaping both breast density and prior breast cancer history. The EDA highlighted strong and biologically consistent gradients involving age, BMI, menopausal status, and family history, while also uncovering structural characteristics of the dataset, such as racial imbalance and clinical selection effects, that must be considered when interpreting the results.</p>
+<p>Building on these insights, two preliminary logistic regression models were developed. The model predicting high breast density confirmed age and BMI as the dominant determinants, with additional contributions from menopausal status and reproductive factors. The model focusing on prior breast cancer highlighted pronounced age, and menopause-related selection effects, while identifying family history as the most meaningful clinical predictor. These findings not only reinforce the patterns observed in the EDA but also provide the first quantitative estimates of the relative importance of each factor.</p>
+<p>Overall, the analyses conducted to date validate the methodological approach chosen for the project and demonstrate the value of combining exploratory visualizations with multivariable statistical modelling. The results form a strong basis for refining the models, deepening the interpretation, and structuring the remaining components of the final report.</p>
+<section id="next-steps" class="level3">
+<h3 class="anchored" data-anchor-id="next-steps">5.1 Next Steps</h3>
+<p>To complete the final report, the following steps are planned:</p>
+<ol type="1">
+<li>Finalize and refine the statistical models</li>
+</ol>
+<ul>
+<li>Assess potential interaction effects (e.g., age × density, BMI × menopause).</li>
+<li>Compare model fit across alternative specifications.</li>
+<li>Compute and present odds ratios with 95% confidence intervals for clearer interpretability.</li>
+</ul>
+<ol start="2" type="1">
+<li>Strengthen the interpretation and contextualization</li>
+</ol>
+<ul>
+<li>Situate the findings within clinical and epidemiological literature.</li>
+<li>Discuss the implications of each model for risk stratification and screening strategies.</li>
+</ul>
+<ol start="3" type="1">
+<li>Produce clear, publication-ready tables and visualizations</li>
+</ol>
+<ul>
+<li>Create formatted tables of regression coefficients and odds ratios.</li>
+<li>Refine plots from the EDA for inclusion in the final document.</li>
+<li>Ensure all figures follow a consistent visual style.</li>
+<li>Add interactive plots/tables</li>
+</ul>
+<ol start="4" type="1">
+<li>Complete the written analysis</li>
+</ol>
+<ul>
+<li>Develop the Results section with detailed narrative interpretation.</li>
+<li>Finalize the Discussion, including limitations and potential biases.</li>
+<li>Provide actionable conclusions aligned with the research questions.</li>
+</ul>
+<ol start="5" type="1">
+<li>Improve the Quarto/HTML final report</li>
+</ol>
+<ul>
+<li>Integrate code, output, figures, and text into a cohesive document.</li>
+<li>Ensure reproducibility and clarity of the analytical workflow</li>
+</ul>
+
+</section>
+</section>
+
+<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" role="doc-bibliography" id="quarto-bibliography"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" data-line-spacing="2" role="list">
+<div id="ref-Abildgaard2018" class="csl-entry" role="listitem">
+Abildgaard, J., Ahlström, M. G., Daugaard, G., Nielsen, D. L., Pedersen, A. T., Lindegaard, B., &amp; Obel, N. (2018). Mortality and risk of cancer after prophylactic bilateral oophorectomy in women with a family history of cancer. <em>JNCI Cancer Spectrum</em>, <em>2</em>(3), pky034. <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC6649791/?utm">https://pmc.ncbi.nlm.nih.gov/articles/PMC6649791/?utm</a>
+</div>
+<div id="ref-Arnold2022" class="csl-entry" role="listitem">
+Arnold, M., Morgan, E., Rumgay, H., Mafra, A., Singh, D., Laversanne, M., Vignat, J., Gralow, J. R., Cardoso, F., Siesling, S., &amp; Soerjomataram, I. (2022). Current and future burden of breast cancer: Global projections to 2040 and risk factors. <em>International Journal of Cancer</em>, <em>66</em>. <a href="https://doi.org/10.1016/j.ijc.2022.00000">https://doi.org/10.1016/j.ijc.2022.00000</a>
+</div>
+<div id="ref-PubMed17229950" class="csl-entry" role="listitem">
+Boyd, N. F., Guo, H., Martin, L. J., Sun, L., Stone, J., Fishell, E., Jong, R. A., Hislop, G., Chiarelli, A., Minkin, S., &amp; Yaffe, M. J. (2007). Mammographic density and the risk and detection of breast cancer. <em>The New England Journal of Medicine</em>, <em>356</em>(3). <a href="https://doi.org/10.1056/NEJMoa062790">https://doi.org/10.1056/NEJMoa062790</a>
+</div>
+<div id="ref-Kim2020" class="csl-entry" role="listitem">
+Kim, E. Y., Chang, Y., Ahn, J., Yun, J.-S., Park, Y. L., Park, C. H., Shin, H., &amp; Ryu, S. (2020). Menopausal transition, body mass index, and prevalence of mammographic dense breasts in middle-aged women. <em>International Journal of Environmental Research and Public Health</em>, <em>17</em>(16). <a href="https://doi.org/10.3390/jcm9082434">https://doi.org/10.3390/jcm9082434</a>
+</div>
+<div id="ref-Lukasiewicz2021" class="csl-entry" role="listitem">
+Lukasiewicz, S., Czeczelewski, M., Forma, A., Baj, J., Sitarz, R., &amp; Stanislawek, A. (2021). Breast cancer — epidemiology, risk factors, classification, prognostic markers, and current treatment strategies — an updated review. <em>Cancers (Basel)</em>, <em>13</em>(17). <a href="https://doi.org/10.3390/cancers13174287">https://doi.org/10.3390/cancers13174287</a>
+</div>
+<div id="ref-PubMed16775176" class="csl-entry" role="listitem">
+McCormack, V. A., &amp; Santos Silva, I. dos. (2006). Breast density and parenchymal patterns as markers of breast cancer risk: A meta-analysis. <em>Cancer Epidemiology, Biomarkers &amp; Prevention</em>, <em>15</em>(6). <a href="https://doi.org/10.1158/1055-9965.EPI-06-0034">https://doi.org/10.1158/1055-9965.EPI-06-0034</a>
+</div>
+<div id="ref-Obeagu2024" class="csl-entry" role="listitem">
+Obeagu, E. I., &amp; Obeagu, G. U. (2024). Breast cancer: A review of risk factors and diagnosis. <em>Medicine</em>, <em>103</em>(3). <a href="https://doi.org/10.1097/MD.0000000000036905">https://doi.org/10.1097/MD.0000000000036905</a>
+</div>
+<div id="ref-RTS2025" class="csl-entry" role="listitem">
+RTS. (2025). <em>Cancer du sein: 74</em>. <a href="https://www.rts.ch/info/sante/2025/article/cancer-du-sein-74-des-patientes-ont-pu-avoir-un-enfant-apres-traitement-29015464.html">https://www.rts.ch/info/sante/2025/article/cancer-du-sein-74-des-patientes-ont-pu-avoir-un-enfant-apres-traitement-29015464.html</a>
+</div>
+<div id="ref-WHO2025" class="csl-entry" role="listitem">
+WHO. (2025). <em>Breast cancer – fact sheet</em>. <a href="https://www.who.int/fr/news-room/fact-sheets/detail/breast-cancer">https://www.who.int/fr/news-room/fact-sheets/detail/breast-cancer</a>
+</div>
+<div id="ref-PubMed34767469" class="csl-entry" role="listitem">
+Yala, A., Mikhael, P. G., Strand, F., Lin, G., Satuluru, S., Kim, T., Banerjee, I., Gichoya, J., Trivedi, H., Lehman, C. D., Hughes, K., Sheedy, D. J., Matthis, L. M., Karunakaran, B., Hegarty, K. E., Sabino, S., Silva, T. B., Evangelista, M. C., Caron, R. F., … Barzilay, R. (2022). Multi-institutional validation of a mammography-based artificial intelligence model for breast cancer risk. <em>Journal of Clinical Oncology</em>, <em>40</em>(16). <a href="https://doi.org/10.1200/JCO.21.01337">https://doi.org/10.1200/JCO.21.01337</a>
+</div>
+</div></section></div></main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>
