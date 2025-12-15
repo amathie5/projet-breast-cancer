@@ -1,0 +1,1504 @@
+---
+title: "Investigating Risk Factors for Breast Cancer: Associations Between Breast Density, Prior History, and Key Patient Characteristics"
+author: 
+  - name: "Valentine Krafft"
+  - name: "Tifanie Yazbeck"
+  - name: "Hadrien Bischof"
+  - name: "Audrey Mathieu"
+date: today
+abstract: |
+  This project analyzes patterns of breast density and prior breast cancer history using data from the Breast Cancer Surveillance Consortium (BCSC), covering more than a decade of mammography records across the United States. The study aims to (i) characterize the distribution of breast density and key demographic and clinical variables, (ii) identify factors associated with high breast density, and (iii) examine which variables show the strongest association with a previous breast cancer diagnosis.
+  
+  Exploratory data analysis highlights strong and biologically consistent relationships between age, menopausal status, body mass index (BMI), and breast density, with breast density decreasing monotonically with age and BMI. Logistic regression models further confirm age and menopausal status as dominant predictors of both breast density and prior breast cancer history. While family history is a well-established risk factor in the clinical literature, its adjusted association appears attenuated in the multivariable models, reflecting dataset-specific constraints and strong confounding with age and screening behavior.
+  
+  Overall, the results provide a robust statistical framework for understanding key determinants of breast density and breast cancer history within a large-scale screening population. The analysis also highlights important methodological limitations related to missing data, variable availability, and selection effects, which are critical for interpreting the findings and for guiding future research using large observational health datasets.
+format:
+  html:
+    title-block: true
+    title-block-style: default
+    toc: true
+    toc-title: "Table of Contents"
+    toc-depth: 5
+    toc-location: body
+    theme: cosmo
+    page-layout: full
+    code-fold: true
+    self-contained : true
+    code-summary: "Show code"
+    fig-width: 7
+    fig-height: 4.5
+    fig-align: center
+    fig-cap-location: bottom
+    fig-format: svg
+    df-print: paged
+bibliography: references.bib
+csl: apa.csl
+execute:
+  echo: true
+  warning: false
+  message: false
+---
+
+## 1. Introduction
+
+### 1.1. Background and Motivation
+
+With approximately 2.3 million new cases diagnosed in 2022 (@WHO2025), breast cancer is the most common cancer among women worldwide. It is known to have a large impact on the global number of cancer deaths, and is projected to increase by around 40% by 2040, reaching nearly 3 million new cases per year (@Arnold2022). In Switzerland, the proportion of diagnoses among women under age 40 is increasing (@RTS2025). These figures highlight the magnitude of breast cancer as a major global public health concern, reinforcing the importance of early detection, which plays a pivotal role in improving patient outcomes and supporting more refined risk assessment strategies.
+
+Mammography is the cornerstone of population-wide screening programs, yet individual risk is highly heterogeneous. It varies according to a combination of demographic, clinical, and reproductive factors. Age, body mass index (BMI), menopausal status, family or personal history of breast cancer, hormone replacement therapy use, and breast density are among the most influential determinants shaping individual risk profiles (@Obeagu2024). Other lifestyle-related factors, such as alcohol consumption, smoking, and physical inactivity, are also known to influence risk but are not captured in the dataset used for this study (@Lukasiewicz2021). 
+
+From a data science perspective, understanding how these factors interact is critical to refining early detection strategies and improving risk stratification models. The ability to quantify risk factors and understand their combined effects supports better resource allocation and predictive assessment, both in public health and in insurance domains where early detection and prevention can substantially reduce long-term costs.
+
+### 1.2. Project Objectives
+
+The overarching goal of this project is to characterize and quantify the demographic, clinical, and reproductive factors associated with two core indicators of breast cancer risk:
+
+- **breast density (BI-RADS 3-4)**
+- **prior breast cancer history**
+
+This project is exploratory in nature, combining statistical analysis and visualization techniques to reveal meaningful patterns and associations within a large population dataset. Specifically, the project pursues the following objectives:
+
+1. **Describe the population** undergoing mammography between 2005 and 2017 by conducting an exploratory data analysis (EDA), focusing on the distribution of key risk factors.
+2. **Investigate univariate and bivariate associations** of demographic, clinical, and reproductive characteristics with the two outcomes of interest.
+3. **Examine potential interactions**, such as age × menopausal status or BMI × breast density.
+4. **Analyze temporal trends** in breast density and prior breast cancer to determine whether population-level patterns have shifted over time.
+5. **Fit logistic regression models** to quantify the adjusted effect of each factor on breast density and prior breast cancer, providing interpretable statistical insights.
+
+The findings aim to give a better understanding of how each factor influences disease patterns, thereby contributing to more accurate assessment of risk profiles in female populations.
+
+### 1.3. Research Questions
+
+To operationalize these objectives, the study focuses on the following research questions:
+
+**1. What is the prevalence of high breast density and prior breast cancer history in the study population ?**
+
+Understanding the prevalence provides essential baseline information about the study population. It allows us to quantify how common high breast density and previous breast cancer diagnoses are, which is critical for identifying at-risk subgroups and contextualizing subsequent analyses.
+
+**2. How do demographic, clinical, and reproductive characteristics influence breast density levels ?**
+
+Breast density is a known risk factor for breast cancer, but its distribution can vary based on age, hormonal status, reproductive history, and other clinical factors. Investigating these relationships helps identify which characteristics are most predictive of higher breast density and can inform targeted screening or prevention strategies.
+
+**3. Which factors show the strongest association with a previous breast cancer diagnosis, and how do they interact ?**
+
+Identifying the factors most strongly linked to prior breast cancer can help prioritize risk assessment and guide personalized patient management.
+
+These questions guide the entire analytical workflow and ensure a clear link between the dataset, the methods, and the final interpretation.
+
+### 1.4. Related Work
+
+Extensive research has established the role of demographic, reproductive, and clinical factors in shaping breast cancer risk. Classical epidemiological studies, such as those by @PubMed17229950 and @PubMed16775176, highlighted the strong association between breast density and breast cancer incidence, framing breast density as a key intermediate biomarker. 
+
+From a methodological standpoint, recent studies have leveraged data-driven and actuarial approaches to model cancer risk. Machine learning frameworks (e.g., @PubMed34767469) have demonstrated improved prediction of breast cancer outcomes using large-scale imaging and clinical datasets. These approaches align with actuarial principles of risk classification and model-based decision-making, emphasizing the integration of statistical learning into preventive health analytics.
+
+The current study builds upon these findings by combining large-scale EDA with interpretable statistical models to provide a holistic, data-driven perspective on breast cancer risk patterns within the BCSC dataset.
+
+
+
+## 2. Data
+
+### 2.1. Data Source
+
+This project relies on data from the [Breast Cancer Surveillance Consortium (BCSC)](https://www.bcsc-research.org/index.php/datasets/rfdataset '**Breast Cancer Surveillance Consortium (@BCSC)**'), accessed on october 2025. The BCSC is a collaborative network of six active breast imaging registries and two historic registries focused on research to assess and improve the delivery and quality of breast cancer screening and related outcomes in the United States.
+
+The BCSC proposes three datasets corresponding to different collection periods (2005 to 2009, 2009 to 2013, and 2013 to 2017) that we merged to obtained a unified dataset, which  aggregates mammography records collected across multiple screening centers between 2005 and 2017, covering 6,788,438 mammograms. 
+
+The variables encompass: 
+
+- Age group 
+- Race and ethnicity 
+- Family history of breast cancer
+- Age at first  menstruation
+- Age at first birth
+- Breast density (BI-RADS)
+- Current hormone replacement therapy (HRT) use
+- Menopausal status
+- Body Mass Index (BMI) 
+- Previous breast biopsy or aspiration
+- History of prior breast cancer
+- Year of screening
+
+This breadth of variables allows for a comprehensive exploration of risk factors commonly highlighted in epidemiological literature. The dataset is fully anonymized and contains no personally identifiable information.
+
+### 2.2. Dataset Overview 
+
+The 6.8 million mammography records were consolidated into aggregated subgroups, each representing a unique combination of demographic, clinical and reproductive factors. This aggregation proess results in a dataset containing approximately 1.7 million observations.
+
+Key characteristics:
+
+- **High-dimensional categorical structure:** Most predictors are ordinal or categorical rather than continuous.
+- **Consistent coding across years:** Variable definitions remain stable from 2005 to 2017.
+- **Large sample size:** Enables robust estimation even in smaller subgroups.
+- **Biologically meaningful variables:** The variables have well-established links to breast cancer risk.
+
+The initial dataset, an extract of which is presented in @tbl-encoded-head, contains 13 variables and 1,522,340 observations, amounting to 19,790,420 values.
+
+```{python}
+#| label: tbl-encoded-head
+#| tbl-cap: 'First rows of the initial dataset'
+
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+pd.set_option("display.max_columns", None)
+
+df_encoded = pd.read_csv(r"C:\Users\jeanv\Documents\uni\Master Management\Data Science for Management\Projet\Report\data\df_encoded.csv")
+df = df_encoded.copy()
+
+#Displaying the head of the dataset
+display(df_encoded.head())
+
+# Number of variables (columns)
+num_variables = df_encoded.shape[1]
+
+# Number of observations (lines)
+num_observations = df_encoded.shape[0]
+
+# Total number of values
+total_values = df_encoded.size
+
+print("number of variables = ", num_variables)
+print("number of observations = ", num_observations)
+print("number of values = ", total_values)
+
+```
+
+
+ Its overall structure and quality are summarized in @tbl-initial-variables-descr, which details for each variable its type, the number of missing values, a brief description, and the range of possible values. The dataset is entirely aggregated, meaning that each row corresponds to the number of women sharing a specific combination of these attributes rather than individual-level observations.
+
+
+```{python}
+#| label: tbl-initial-variables-descr
+#| tbl-cap: "Summary of variables: type, missing values and description"
+#| fig-align: left
+
+missing = df_encoded.isnull().sum()
+dtypes = df_encoded.dtypes.astype(str)
+
+# Descriptions dictionary
+descriptions = {
+    "year": "Year of mammogram",
+    "age_group_5_years": "Age",
+    "race_eth": "Race/ethnicity",
+    "bmi_group": "BMI categories",
+    "menopaus": "Menopausal status (pre-, post-, surgical)",
+    "current_hrt": "Current hormone replacement therapy use",
+    "first_degree_hx": "Family history of breast cancer",
+    "age_menarche": "Age at first menstruation",
+    "age_first_birth": "Age at first birth",
+    "biophx": "Previous breast biopsy or aspiration",
+    "BIRADS_breast_density": "BI-RADS breast density classification (1–4)",
+    "breast_cancer_history": "Prior breast cancer diagnosis (yes/no)",
+    "count": "Number of women in this profile",
+}
+
+# Possible values dictionary
+value_range = {
+    "year": "from 2005 to 2017",
+    "age_group_5_years": "from 18 to 85+ in group of 5 years intervals",
+    "race_eth": "Non-hispanic white, Non-hispanic black, Hispanic, Asian/pacific islander, other/mixed, Native american",
+    "bmi_group": "10-24.99, 25-29.99, 30-34.99, 35+",
+    "menopaus": "Pre-menopausal, post-menopausal, surgical menopause",
+    "current_hrt": "Yes, No",
+    "first_degree_hx": "Yes, No",
+    "age_menarche": "<12, 12-13, 14+",
+    "age_first_birth": "<20, 20-24, 25-29, 30+, nulliparous",
+    "biophx": "Yes, No",
+    "BIRADS_breast_density": "Fatty, Scattered, Heterogeneously dense, Extremely dense",
+    "breast_cancer_history": "Yes, No",
+    "count": "Positive integers",
+}
+
+#Building the table
+summary = (
+    pd.DataFrame({
+        "Variable": dtypes.index,
+        "Type": dtypes.values,
+        "Missing": missing.values,
+    })
+    .assign(
+        Description=lambda d: d["Variable"].map(descriptions),
+        Value_range=lambda d: d["Variable"].map(value_range)
+    )
+    .loc[:, ["Variable", "Type", "Missing", "Description", "Value_range"]]
+)
+summary
+```
+
+### 2.3. Data Cleaning and Preprocessing
+
+To prepare the data for analysis and modeling, several preprocessing steps were performed in Python using pandas, ensuring full reproducibility:
+
+**1. Harmonization of categorical variables**
+
+To improve interpretability and ensure consistent category ordering during the analysis, the variables were **recoded** :
+
+- Using the BCSC documentation we changed the coded values into descriptive labels.
+- The categorical columns were converted to the category type to optimize memory efficiency and modeling compatibility.
+- Ordered variables *(e.g., age, BMI, menopause)* were converted into pandas ordered categorical types, which preserves clinical meaning and enables ordinal comparisons.
+    - e.g.: For BI-RADS, 1 → fatty; 2 → scattered; 3 → heterogeneously dense; 4 → extremely dense
+
+This recoding step was crucial for both EDA and regression modelling, as many variables possess a natural clinical ordering that must be retained.
+
+```{python}
+from pandas.api.types import CategoricalDtype
+
+age_map = {1:'18-29',2:'30-34',3:'35-39',4:'40-44',5:'45-49',6:'50-54',7:'55-59',8:'60-64',9:'65-69',10:'70-74',11:'75-79',12:'80-84',13:'85+'}
+race_map = {1:'non-hispanic white', 2:'non-hispanic black', 3:'asian/pacific islander', 4:'native american',5:'hispanic',6:'other/mixed',9:'unknown'}
+familyhx_map = {0:'no', 1:'yes', 9:'unknown'}
+menarche_map = {0:'14+',1:'12-13',2:'<12',9:'unknown'}
+firstbirth_map = {0:'<20',1:'20-24',2:'25-29',3:'30+',4:'nulliparous',9:'unknown'}
+BIRADS_map = {1:'fatty',2:'scattered',3:'heterogeneously dense', 4:'extremely dense', 5:'unknown'}
+hrt_map = {0:'no', 1:'yes',9:'unknown'}
+menopaus_map = {1:'pre-menopausal',2:'post-menopausal',3:'surgical menopause', 9:'unknown'}
+bmi_map = {1:'10-24.99',2:'25-29.99',3:'30-34.99',4:'35+',9:'unknown'}
+biophx_map = {0:'no',1:'yes', 9:'unknown'}
+history_map = {0:'no',1:'yes',9:'unknown'}
+
+#Replacing the code with the categories
+df['age_group_5_years']=df['age_group_5_years'].map(age_map)
+df['race_eth']=df['race_eth'].map(race_map)
+df['first_degree_hx']=df['first_degree_hx'].map(familyhx_map)
+df['age_menarche']=df['age_menarche'].map(menarche_map)
+df['age_first_birth']=df['age_first_birth'].map(firstbirth_map)
+df['BIRADS_breast_density']=df['BIRADS_breast_density'].map(BIRADS_map)
+df['current_hrt']=df['current_hrt'].map(hrt_map)
+df['menopaus']=df['menopaus'].map(menopaus_map)
+df['bmi_group']=df['bmi_group'].map(bmi_map)
+df['biophx']=df['biophx'].map(biophx_map)
+df['breast_cancer_history']=df['breast_cancer_history'].map(history_map)
+
+#convert as category
+age_group_order = CategoricalDtype(categories=["18-29","30-34", "35-39", "40-44", "45-49", "50-54", "55-59", "60-64", "65-69", "70-74", "75-79", "80-84", "85+"], ordered=True)
+
+age_first_birth_order = CategoricalDtype(categories=["<20", "20-24","25-29","30+", "nulliparous", "unknown"], ordered=True)
+
+age_menarche_order = CategoricalDtype(categories=["<12","12-13","14+", "unknown"], ordered=True)
+
+bmi_group_order = CategoricalDtype(categories=["10-24.99", "25-29.99", "30-34.99", "35+", "unknown"], ordered=True)
+
+BIRADS_breast_density_order = CategoricalDtype(categories=["fatty", "scattered", "heterogeneously dense", "extremely dense", "unknown"], ordered=True)
+
+df["age_group_5_years"] = df["age_group_5_years"].astype(age_group_order)
+df["age_first_birth"] = df["age_first_birth"].astype(age_first_birth_order)
+df["age_menarche"] = df["age_menarche"].astype(age_menarche_order)
+df["bmi_group"] = df["bmi_group"].astype(bmi_group_order)
+df["BIRADS_breast_density"] = df["BIRADS_breast_density"].astype(BIRADS_breast_density_order)
+
+
+unordered_cats = ["race_eth","first_degree_hx","current_hrt","menopaus","biophx","breast_cancer_history"]
+
+df[unordered_cats] = df[unordered_cats].astype("category")
+
+cat_cols = ["age_group_5_years", "age_first_birth", "age_menarche", "bmi_group", "BIRADS_breast_density","race_eth", "first_degree_hx", "current_hrt", "menopaus", "biophx", "breast_cancer_history"]
+
+```
+
+**2. Construction of binary outcome variables**
+
+Two dependent variables were defined by creating two binary variables following standard clinical thresholds:  
+
+   - **BIRADS_high** = 1 for dense breast tissue (BI-RADS categories 3–4), 0 otherwise.
+   - **breast_cancer_history_bin** = 1 if the woman had a prior breast cancer diagnosis, 0 otherwise.
+
+This transformation aligns the dataset with the research questions and ensures compatibility with logistic regression.
+
+```{python}
+#create two binary variables for high BIRADS and cancer history
+df['BIRADS_high']=np.where(df_encoded['BIRADS_breast_density'].isin([3,4]),1,0)
+df['breast_cancer_history_bin']=np.where(df_encoded['breast_cancer_history']==1,1,0)
+```
+
+**3. Data type validation and integrity checks**
+
+To ensure that the dataset was ready for regression analysis, the following verifications were performed:
+
+- All frequency counts (count) need to be positive integers
+- Validation that categorical variables contained only expected labels
+- Presence of duplicate observations, that would need to be removed to maintain one unique record per demographic-clinical subgroup. This last step was not needed as there were no duplicates.
+- To confirm consistency with the original dataset, the total number of women across all groups need to be equal the expected number of mammograms.
+
+These checks guaranteed that the aggregated data reflected coherent population subgroups.
+
+```{python}
+#| output: false
+
+##integrity checks
+#check that all frequency counts are positive integers
+valid = (df["count"].apply(lambda x: isinstance(x, int) and x > 0)).all()
+print('all frequency counts are positive integers: ', valid)
+
+#check types and unique values
+for col in cat_cols:
+  print(col, ':',df[col].unique())
+
+#check for duplicates
+print('Duplicates: ', df.duplicated().sum())
+
+#the total number of observations should be 6'788'436
+print('Number of observations: ', df['count'].sum())
+```
+
+**4. Handling of unknown and missing values**
+
+Categories labeled as “unknown” (coded as 9 in the initial dataset) were systematically converted to NaN values, ensuring compatibility with standard statistical handling of missing data. 
+
+This approach prevents incorrect categorical aggregation and preserves analytical transparency. Below (@tbl-inter-missing) we can find the number of values per variable that we are going to remove from our dataset.
+ 
+```{python}
+#| label: tbl-inter-missing
+#| tbl-cap: 'NaN values that will need to be removed'
+
+#Replacing unknown with NaN
+df = df.replace('unknown',np.nan)
+
+#Number and proportion of missing values
+missing_counts = df.isna().sum()
+missing_pct = (missing_counts/len(df)).map(lambda x: f"{x:.0%}")
+
+missing_table = (
+    pd.DataFrame({
+        "Variable": missing_counts.index,
+        "Missing values": missing_counts.values,
+        "Missing %": missing_pct,
+    })
+    .reset_index(drop=True)
+)
+
+missing_table
+```
+
+Most variables contained low proportions of missing values. In order to obtain a clean and fully interpretable final dataset, that could be used for our Exploratory Data Analysis, missing categories were excluded from the analysis. 
+
+We removed 1,177,276 of the 1,522,340 values due to missing or unknown categorical values, representing 77.33% of the original data. This substantial reduction reflects the heterogeneous data completeness across contributing registries and time periods, rather than arbitrary filtering decisions. Although this approach reduces sample size, it ensures internal consistency across analyses and avoids introducing additional assumptions through imputation. Importantly, the retained dataset remains large enough to support robust statistical inference. Potential selection bias and the implications of this data reduction are explicitly discussed in the limitations section.
+
+This resulted in a final cleaned dataset (extract in @tbl-cleaned-head) containing 345,064 aggregated observations across 15 variables, for a total of 6,328,200 values.
+
+ 
+```{python}
+#| label: tbl-cleaned-head
+#| tbl-cap: 'First rows of the cleaned dataset'
+
+df_cleaned = df.dropna()
+
+# Number of variables (columns) and rows
+num_variables = df_cleaned.shape[1]
+num_rows = df_cleaned.shape[0]
+
+# Number of observations (lines)
+num_observations = num_rows * df_cleaned["count"]
+
+# Total number of values
+num_values = df_cleaned.size
+
+print('number of variables = ', num_variables)
+print('number of rows = ', num_rows)
+print('number of observations = ', num_observations)
+print('number of values removed = ', df.shape[0] - df_cleaned.shape[0])
+print('% of the data removed = ', round(((df.shape[0] - df_cleaned.shape[0]) / df.shape[0]) * 100, 2))
+print('number of values in the cleaned dataset = ', total_values)
+
+df_cleaned.head()
+```
+
+The overall structure and quality of the cleaned dataset are summarized in @tbl-cleaned-info and relevant information about the dataset is displayed in @tbl-cleaned-descr.
+
+```{python}
+#| label: tbl-cleaned-info
+#| tbl-cap: 'cleaned dataset summary'
+
+#count of non-null variables
+non_null_cleaned = df_cleaned.notna().sum()
+
+#Number of missing values
+missing_cleaned = df_cleaned.isna().sum()
+
+#variables type
+dtypes_cleaned = df_cleaned.dtypes.astype(str)
+
+#Building the table
+summary_cleaned = (
+    pd.DataFrame({
+        "Variable": df_cleaned.columns,
+        "Non-null values": non_null_cleaned.values,
+        "Missing values": missing_cleaned.values,
+        "Missing %": (missing_cleaned/len(df_cleaned)).fillna(0).map(lambda x: f"{x:.0%}"),
+        "Type": dtypes_cleaned.values,
+    })
+)
+summary_cleaned
+```
+
+
+```{python}
+#| label: tbl-cleaned-descr
+#| tbl-cap: 'Description of the cleaned dataset'
+
+df_cleaned_descr = df_cleaned.describe(include = 'all')
+df_cleaned_descr['year'] = df_cleaned_descr['year'].round(0)
+df_EDA = df_cleaned.copy()
+
+df_cleaned_descr
+```
+
+
+**5. Dataset restructuring for EDA and statistical modelling**
+
+For clarity in plotting and subgroup analysis:
+
+- Cleaned variables were duplicated into a separate dataset (df_EDA)
+- Re-encoding of the initial dataset was performed to enable correlation and heatmap visualization, this was done using :  
+    - **One-hot encoding** for nominal categories (family history, breast density)
+    - **Ordinal encoding** for clinically ordered variables (age, BMI, menopause)
+- Year was preserved as a continuous variable to analyze temporal trends
+
+The numerical re-encoding step was also a prerequisite for the logistic regression models, which requires predictors to be expressed numerically.
+
+This cleaning workflow ensures internal consistency and avoids methodological bias during the EDA and modeling phases.
+
+```{python}
+##1. Recode categories in a meaningful numerical order
+# Recode age groups in ascending order
+age_order = {
+    "18-29": 0, "30-34": 1, "35-39": 2, "40-44": 3,
+    "45-49": 4, "50-54": 5, "55-59": 6, "60-64": 7,
+    "65-69": 8, "70-74": 9, "75-79": 10, "80-84": 11, "85+": 12
+}
+
+# Recode BMI categories in ascending BMI
+bmi_order = {
+    "10-24.99": 0,
+    "25-29.99": 1,
+    "30-34.99": 2,
+    "35+": 3
+}
+
+# Recode menopausal status logically: pre → surgical → post
+menopause_order = {
+    "pre-menopausal": 0,
+    "surgical menopause": 1,
+    "post-menopausal": 2
+}
+
+# Recode family history: no = 0, yes = 1
+family_order = {
+    "no": 0,
+    "yes": 1
+}
+
+# Recode BI-RADS density (low → high)
+birads_order = {
+    "fatty": 0,
+    "scattered": 1,
+    "heterogeneously dense": 2,
+    "extremely dense": 3
+}
+
+# Recode prior breast cancer history
+history_order = {
+    "no": 0,
+    "yes": 1
+}
+
+# Recode prior breast cancer history
+history_order = {
+    "no": 0,
+    "yes": 1
+}
+
+
+##2. Apply recoding to the dataframe
+
+df_cleaned["age_code"] = df_cleaned["age_group_5_years"].map(age_order)
+df_cleaned["bmi_code"] = df_cleaned["bmi_group"].map(bmi_order)
+df_cleaned["menopaus_code"] = df_cleaned["menopaus"].map(menopause_order)
+df_cleaned["family_code"] = df_cleaned["first_degree_hx"].map(family_order)
+df_cleaned["birads_code"] = df_cleaned["BIRADS_breast_density"].map(birads_order)
+df_cleaned["history_code"] = df_cleaned["breast_cancer_history"].map(history_order)
+```
+
+**6. Validation of multicollinearity and consistency**
+
+Before proceeding to modelling, a correlation analysis was conducted on the recoded numeric variables. This diagnostic step served to:
+
+- **Confirm the absence of problematic multicollinearity** that could compromise model stability.
+- **Validate clinically expected associations**, such as the correlation between age and menopausal status (≈ 0.68).
+- **Ensure the numerical encodings behaved as intended**, with ordered variables reflecting their underlying gradients.
+
+Together, these checks confirmed that the preprocessing pipeline produced a dataset that is both internally consistent and suitable for unbiased, stable regression modelling. (@tbl-correlation)
+
+```{python}
+#| label: tbl-correlation
+#| tbl-cap: 'Correlation table of the pertinent variables'
+
+##3. Build the focused correlation dataframe
+
+df_corr = df_cleaned[[
+    "age_code",
+    "bmi_code",
+    "menopaus_code",
+    "family_code",
+    "birads_code",
+    "history_code"
+]]
+
+# Compute correlation matrix
+corr_focus = df_corr.corr().round(3)
+display(corr_focus)
+```
+
+### 2.4. Challenges
+
+While the dataset is comprehensive and large-scale, several challenges limit the scope of the analysis : 
+
+- The most significant limitaion lies in its **aggregated structure**, which prevents patient-level investigation and reduces the granularity of possible analyses
+- Several variables contain **"unknown" labels or missing values**, which may affect statistical robustness.
+- Some combinations of demographic and clinical factors are rare, resuting in **uneven category representation**. This may lead to: 
+    - Sparsity in specific subgroups
+    - Wide confidence intervals in logistic regression
+- The race and ethnicity variable cannot be used for inferential analysis because of the **strong overrepresentation of white non-hispanic women** in the dataset, which could introduce substantial bias in population-level comparisons.
+
+These factors must be considered when interpreting the results of the exploratory analysis and logistic regression modeling.
+
+We will explore more concretely these challenges in the EDA section.
+
+## 3. Exploratory Data Analysis (EDA)
+
+### 3.1. Purpose
+
+The purpose of the Exploratory Data Analysis (EDA) is to gain a comprehensive understanding of the BCSC dataset before conducting any formal statistical modelling. This preliminary step allows us to: 
+ 
+- Visualize the distribution of key demographic and clinical variables.
+- Examine potential structural biases or data quality issue that could affect subsequent analyses.
+- Uncover preliminary associations between predictors and outcomes.
+- Contextualize the magnitude and direction of expected effects.
+
+Because the dataset contains over 1.7 million screening exams, **EDA is essential to correctly characterize the profiles of women with high breast density or a personal history of breast cancer**, to explore how major determinants such as age, BMI, menopausal status, family history, and reproductive factors relate to these outcomes, and to avoid misinterpretation in later stages.
+
+These insights guide the selection and engineering of variables for modelling, support decisions regarding model specification and ensure that subsequent analyses are built on a solid empirical foundation. 
+
+
+### 3.2. Univariate Analysis
+
+#### 3.2.1. Distribution of Key Predictors 
+
+We begin by examinig the univariate distributions of the predictors. This examination provides the foundation for understanding risk dynamics in the screened population. Here are the relevant information we can conclude from it: 
+
+- **Age distribution:** Following the expected age structure of a screening cohort, most women fall between 40 and 65 years, with a notable decline in participation after age 70. This pattern aligns with screening guidelines recommending regular mammography starting at age 40 or 45 and more selective screening in older age groups (@USPSTF2024).
+- **Race and ethnicity distribution:** There is a noticeable overrepresentation of non-Hispanic white women, which limits the scope of ethnic comparisons and requires cautious interpretation of this variable. 
+- **Menopausal status distribution:** Post-menopausal women represent the majority of the sample, while surgical menopause is rare.
+- **BMI distribution:** BMI follows a right-skewed profile, with most women classified as normal or overweight.
+
+
+```{python}
+#| label: fig-factors-distributions
+#| fig-cap: 'Univariate distributions of the key predictors'
+#| out-width: 80%
+#| fig-align: center
+
+df_cleaned_agg = df_cleaned.groupby(cat_cols, as_index=False)['count'].sum()
+
+key_cols = ["age_group_5_years", "race_eth", "menopaus", "bmi_group"]
+n_cols = 2
+n_rows = (len(key_cols) + n_cols - 1) // n_cols
+
+fig, axes = plt.subplots(n_rows, n_cols, figsize=(8, 4*n_rows))
+axes = axes.flatten()
+
+for i, col in enumerate(key_cols):
+    ax = axes[i]
+    order = list(df_cleaned_agg[col].cat.categories)
+
+    sns.countplot(
+        data=df_cleaned,
+        x=col,
+        ax=ax,
+        order=order
+    )
+
+    ax.set_title(f'Distribution of {col}', fontsize=10, fontweight='bold')
+    ax.tick_params(axis='x', rotation=90)
+
+    #Graph personalisation
+
+    #AGE
+    if col == "age_group_5_years":
+        age_highlight = ["40-44", "45-49", "50-54", "55-59", "60-64"]
+        for patch, cat in zip(ax.patches, order):
+            if cat in age_highlight:
+                patch.set_alpha(1.0)   
+            else:
+                patch.set_alpha(0.5)   #more transparent
+
+    #RACE/ETHNICITY
+    elif col == "race_eth":
+        highlight_cat = "non-hispanic white"
+        for patch, cat in zip(ax.patches, order):
+            if cat.lower() == highlight_cat:
+                patch.set_alpha(1.0)
+            else:
+                patch.set_alpha(0.5)
+
+    #BMI
+    elif col == "bmi_group":
+        bmi_labels = {
+            "10-24.99": "Normal",
+            "25-29.99": "Overweight",
+            "30-34.99": "Obesity",
+            "35+": "Severe Obesity"
+        }
+
+        for patch, cat in zip(ax.patches, order):
+            label = bmi_labels.get(cat)
+            if label is not None:
+                height = patch.get_height()
+                ax.text(
+                    patch.get_x() + patch.get_width()/2,
+                    height / 2,
+                    label,
+                    ha="center", va="center",
+                    fontsize=6, fontweight="bold",
+                    color="white",
+                    rotation=90
+                )
+
+plt.tight_layout()
+plt.show()
+```
+
+In addition to the relevant information presented above, the univariate analysis also confirmed that variables such as family history, age at menarche, age at first birth, present HRT, etc. follow expected patterns, without displaying unexpected anomalies. Because these predictors exhibit stable distributions and limited interpretive complexity, their detailed plots are included in the Appendix.
+
+#### 3.2.2. Prevalence of the two outcomes
+
+In addition to the predictors, it is crucial to describe the distribution of the two dependent variables that will be modeled in later sections:
+
+- **High breast density (BI-RADS 3-4)** represents approximately **50%** of all screening examinations. 
+- **Prior breast cancer history** accounts for around **6%** of all exams. 
+
+These prevalence underscore two important points for modeling: 
+
+1. High breast density, being common, provides a robust outcome for multivariable regression.
+2. Prior cancer, being rarer, introduces class imbalance that may influence effect estimates and confidence intervals.
+
+
+```{python}
+p_birads_high = (df_cleaned['BIRADS_high'] * df_cleaned['count']).sum() / df_cleaned['count'].sum()
+p_history = (df_cleaned['breast_cancer_history_bin'] * df_cleaned['count']).sum() / df_cleaned['count'].sum()
+print(f'Proportion of women with high breast density : {p_birads_high:.2%}')
+print(f'Proportion of women with prior breast cancer : {p_history:.2%}')
+```
+
+
+### 3.3. Bivariate Analysis 
+
+To better understand how predictors interact with each other and with the outcomes, we assess cross-tabulations and stratified visualizations. The relevant findings are displayed below.
+
+**BMI and Breast Density:**
+
+@fig-prop-birads-bmi shows the proportion of women with high breast density (BI-RADS = 3 or 4) across BMI categories. A strong **decreasing pattern** emerges: women in the lowest BMI group (18–24.99) exhibit the highest proportion of dense breasts (around 65%), while this proportion steadily declines across higher BMI ranges, reaching its lowest level among women with BMI ≥ 35. 
+
+This inverse relationship is biologically well-established. As body fat increases, the proportion of fibroglandular tissue decreases, mechanically lowering breast density (@Wiki). Because breast density is both a major risk factor for breast cancer and a determinant of mammography sensitivity, BMI is therefore an essential variable to consider when profiling women who are more likely to present high-density breast tissue.
+
+```{python}
+#| label: fig-prop-birads-bmi
+#| fig-cap: 'Proportion of women with high breast density by BMI group'
+
+## Calculating proportion
+prop_birads_bmi = (df_cleaned.groupby('bmi_group')['BIRADS_high'].mean().reset_index())
+
+bmi_labels = {
+    "10-24.99": "normal",
+    "25-29.99": "overweight",
+    "30-34.99": "obesity",
+    "35+": "morbid obesity"
+}
+
+plt.figure(figsize=(8,5))
+ax=sns.barplot(
+    data=prop_birads_bmi,
+    x='bmi_group',
+    y='BIRADS_high'
+)
+
+plt.title("Proportion of Women with High Breast Density by BMI Group", fontsize=10, fontweight='bold')
+plt.ylabel("Proportion (0–1)")
+plt.xlabel("BMI Group")
+plt.xticks(rotation=0)
+
+for patch, category in zip(ax.patches, prop_birads_bmi['bmi_group']):
+    label = bmi_labels.get(category)
+    height = patch.get_height()
+
+    ax.text(
+        patch.get_x() + patch.get_width()/2,
+        height / 2,
+        label,
+        ha="center", va="center",
+        fontsize=8, fontweight="bold",
+        color="white",
+        rotation=90
+    )
+
+plt.tight_layout()
+plt.show()
+```
+
+**Age and Breast Density:**
+
+@fig-prop-birads-age displays the proportion of women with high breast density (BI-RADS 3–4) across five-year age categories. A **strong and consistent decreasing trend** emerges: the highest density levels are observed among women aged 18–34, where more than 70% present dense breast tissue. This proportion gradually declines with age, reaching around 30–35% among women aged 70 and older.
+
+This pattern reflects well-known physiological changes. With increasing age, glandular breast tissue is progressively replaced by adipose tissue, naturally lowering measured density (@Kim2020). Because both breast density and age are important predictors of breast cancer risk, this figure highlights age as a crucial variable to include in the analysis and motivates its role as a major confounder in the statistical models.
+
+Moreover, age positively impact prior breast cancer history, which makes sense because older women had more time to develop cancer.
+
+```{python}
+#| label: fig-prop-birads-age
+#| fig-cap: 'Proportion of women with high breast density by age group'
+#| out-width: 80%
+#| fig-align: center
+
+prop_birads_age = (df_cleaned.groupby('age_group_5_years')['BIRADS_high'].mean().reset_index())
+
+plt.figure(figsize=(8,5))
+sns.barplot(
+    data=prop_birads_age,
+    x='age_group_5_years',
+    y='BIRADS_high'
+)
+
+plt.title("Proportion of Women with High Breast Density by Age Group", fontsize=10, fontweight='bold')
+plt.ylabel("Proportion (0–1)")
+plt.xlabel("Age Group (5-year intervals)")
+plt.xticks(rotation=45)
+plt.tight_layout()
+plt.show()
+```
+
+**Family history and prior cancer:**
+
+@fig-prop-history-family compares the proportion of women with a prior breast cancer diagnosis between those with and without a first-degree family history of breast cancer. The difference is substantial: **women reporting a family history show a markedly higher prevalence of past cancer (around 9%) compared with those without such history (around 6%)**.
+
+This strong association reflects the well-established role of genetic predisposition in breast cancer susceptibility. A positive family history often indicates shared genetic mutations, such as BRCA1/BRCA2, as well as shared environmental or lifestyle factors within families (Dwornik R., Białkowska K).
+
+Because family history is one of the strongest non-modifiable predictors of breast cancer, this figure underlines its importance in risk profiling and motivates its inclusion as a key explanatory variable in our statistical models
+
+```{python}
+#| label: fig-prop-history-family
+#| fig-cap: 'Proportion of women with prior breast cancer by family history status'
+prop_cancer_family = (df_cleaned.groupby('first_degree_hx').apply(lambda g: np.average(g['breast_cancer_history_bin'], weights=g['count'])).reset_index(name='prop_prior_cancer'))
+
+plt.figure(figsize=(8,5))
+sns.barplot(
+    data=prop_cancer_family,
+    x='first_degree_hx',
+    y='prop_prior_cancer'
+)
+
+plt.title("Proportion of Women with Prior Breast Cancer by Family History Status", fontsize=10, fontweight='bold')
+plt.ylabel("Proportion (0–1)")
+plt.xlabel("Family History of Breast Cancer")
+plt.xticks(rotation=0)
+plt.tight_layout()
+plt.show()
+```
+
+**Menopausal Status and Prior Breast Cancer History:**
+
+@fig-prop-history-menopaus illustrates the proportion of women with a prior breast cancer diagnosis across different menopausal categories. The pattern is pronounced: **post-menopausal women  exhibit the highest prevalence of past breast cancer, followed by women with surgical menopause, while pre-menopausal women show the lowest proportions.**
+
+This gradient is consistent with clinical expectations. Post-menopausal women are, on average older, and age is one of the strongest predictors of breast cancer incidence and survivorship, which naturally elevates the prevalence of past diagnoses in this group. Surgical menopause also shows elevated prevalence, but slightly lower than natural post-menopause in this dataset. This pattern likely reflects the combination of two forces:
+
+1. **Higher genetic or reproductive risk** among women undergoing surgical menopause, which tends to increase cancer risk.
+2. **Younger average age** compared to naturally post-menopausal women, which mechanically lowers the cumulative probability of having experienced cancer.
+
+Overall, menopausal status captures both age-related and biologically driven differences in cumulative exposure to breast-cancer risk, explaining its strong association with prior breast cancer history and supporting its inclusion as a key variable in subsequent statistical modelling.
+
+```{python}
+#| label: fig-prop-history-menopaus
+#| fig-cap: 'Proportion of women with prior breast cancer by menauposal status'
+prop_cancer_menop = (df_cleaned.groupby('menopaus').apply(lambda g: np.average(g['breast_cancer_history_bin'], weights=g['count'])).reset_index(name='prop_prior_cancer'))
+
+plt.figure(figsize=(8,5))
+sns.barplot(
+    data=prop_cancer_menop,
+    x='menopaus',
+    y='prop_prior_cancer'
+)
+
+plt.title("Proportion of Women with Prior Breast Cancer by Menopausal Status", fontsize=10, fontweight='bold')
+plt.ylabel("Proportion (0–1)")
+plt.xlabel("Menopausal Status")
+plt.xticks(rotation=0)
+plt.tight_layout()
+plt.show()
+```
+
+### 3.4. Temporal trends
+
+Examining temporal dynamics provides a population-level perspective on how screening characteristics evolve.
+
+@fig-temporal-trend presents the temporal evolution of two key outcomes in the cohort between 2005 and 2017: 
+
+**The proportion of women with high breast density remains relatively stable** over the twelve-year period, fluctuating within a narrow range around 0.48–0.52. The slight decrease observed after 2012 may reflect demographic aging of the screening population or shifts in reporting practices, but the overall stability indicates that breast density is a largely biologically driven trait, with no major cohort-wide changes over time.
+
+Additionaly, **the proportion of women with a history of breast cancer shows a small but gradual increase across the study period**. This upward trend can be explained by multiple clinical and demographic factors: improved survivorship, earlier detection, increased longevity, and the accumulation of cancer cases as the cohort ages. Because prior breast cancer is an event that persists throughout life once diagnosed, its prevalence naturally rises over time in repeated screening cohorts.
+
+Together, these patterns highlight two distinct dynamics: breast density behaves as a relatively stable biological characteristic, whereas the prevalence of prior breast cancer increases structurally over time. These temporal insights justify the inclusion of “year” only as a descriptive contextual variable and support focusing subsequent modelling on individual-level predictors rather than calendar time. 
+
+```{python}
+#| label: fig-temporal-trend
+#| fig-cap: 'Evolution of high breast density and prior cancer history between 2005 and 2017'
+#| out-width: 80%
+#| fig-align: center
+
+trend_data = df_cleaned.groupby('year', as_index=False).apply(
+    lambda g: pd.Series({
+        'prop_BIRADS_high': np.average(g['BIRADS_high'], weights=g['count']),
+        'prop_prior_cancer': np.average(g['breast_cancer_history_bin'], weights=g['count'])
+    })
+).reset_index()
+
+plt.figure(figsize=(8,5))
+
+plt.plot(trend_data['year'], trend_data['prop_BIRADS_high'], label='High Breast Density')
+plt.plot(trend_data['year'], trend_data['prop_prior_cancer'], label='Prior Breast Cancer')
+
+plt.title("Trends in High Breast Density and Prior Breast Cancer (2005–2017)", fontsize=10, fontweight='bold')
+plt.xlabel("Year")
+plt.ylabel("Proportion (0–1)")
+plt.xticks(trend_data['year'], rotation=45)
+plt.grid(alpha=0.3, linestyle='--')
+plt.legend()
+plt.tight_layout()
+plt.show()
+```
+
+### 3.5. Correlation Analysis
+
+After recoding categorical variables into a meaningful ordinal structure (e.g., pre → surgical → post menopause; lower → higher BMI) we were able to examine the relationships between key predictors through a correlation matrix (@fig-heatmap).  Indeed, with recoded variables, the signs of correlations now carry interpretable directionality, allowing us to assess the strength and structure of associations relevant to breast density and breast cancer risk. While correlations remain modest, as expected in large epidemiological datasets, several meaningful patterns emerge: 
+
+- **Age and menopausal status show a strong positive correlation (r = 0.68)**, reflecting a biologically expected pattern: older women are far more likely to be post-menopausal. This strong positive relationship validates the recoding approach and confirms that menopausal status functions as a proxy for age-related hormonal changes.
+- **Age and prior breast cancer history show a positive correlation as well (r=0.21)**, consistent with the fact that breast cancer incidence increases with age. A smaller correlation is also observed between **menopausal status and prior breast cancer (r = 0.16)**, further reinforcing this pathway.
+- **Negative correlations involving breast density *(e.g., age: r = –0.18, BMI: r = –0.28, menopause: r = –0.17)* ** reflect well-documented physiological mechanisms: dense breast tissue is more common among younger, leaner, and pre-menopausal women (@Yu2022). 
+- **Correlations involving family history remain close to zero**, indicating that family history is not strongly associated with demographic or physiological variables. This independence suggests that family history may act as a unique genetic risk factor, justifying its inclusion as a distinct predictor in subsequent statistical models.
+
+```{python}
+#| label: fig-heatmap
+#| fig-cap: 'Correlation matrix between the numerical variables'
+
+plt.figure(figsize=(8, 6))
+sns.heatmap(
+    corr_focus,
+    annot=True,
+    cmap="coolwarm",
+    center=0,
+    fmt=".2f",
+    linewidths=0.5
+)
+plt.title("Focused Correlation Matrix (Recoded Variables)", fontsize = 10, fontweight = "bold")
+plt.tight_layout()
+plt.show()
+```
+
+Overall, the recoded correlation matrix: 
+
+- corroborates the patterns identified in earlier bivariate plots.
+- provides additonal support for modeling high breast density separately from prior cancer history.
+- confirms the absence of problematic multicollinearity among the selected predictors.
+- supports the biological plausibility of the observed relationships.
+- validates the methodological choice to include age, BMI, menopausal status, family history, and breast density as separate explanatory variables in the next stage of analysis.
+
+
+### 3.6. Key Findings from EDA
+
+The exploratory analysis provides a detailed characterization of the 1.7 million women included in the BCSC dataset and highlights several patterns that are essential for guiding the modelling strategy. Together, the univariate, bivariate, temporal and correlation results clarify how demographic, reproductive, and clinical variables shape breast density and breast-cancer history outcomes.
+
+**1. Distribution patterns: age, BMI, menopausal status, and ethnicity**
+
+The univariate distributions (@fig-factors-distributions) reveal a screening population largely composed of non-hispanic white women aged 40-65, predominantly post-menopausal, and with BMI levels concentrated in the normal-to-overweight range. 
+
+These patterns underscore two important considerations for the modelling stage : 
+
+- Age and menopausal status will act as major structural determinants of both breast density and cancer history.
+- Limited ethnic diversity reduces statistical power for subgroup analyses and requires cautious generalization of findings.
+
+**2. Prevalence of the outcomes highlights two distinct modelling challenges**
+
+High breast density appears in roughly 50% of exams, whereas prior breast cancer history represents only 6% of observations.
+
+In addition to reinforcing the biological distinction between a current anatomical trait (density) and a cumulative lifetime event (prior cancer), this asymmetry has important implications : 
+
+- High density provides a sufficiently balanced target for modelling.
+- Prior cancer introduces class imbalance, meaning effect sizes may be sensitive to rare-event issues and confidence intervals may be wider.
+
+**3. Strong, biologically coherent bivariate relationships**
+
+Several predictors show clear and clinically expected associations with key outcomes:
+
+- BMI and breast density (@fig-prop-birads-bmi): an inverse gradient, with leaner women showing much higher density.
+- Age and breast density (@fig-prop-birads-age): density declines sharply with age, mirroring physiological involution of glandular tissue.
+- Family history and prior cancer (@fig-prop-history-family): strong elevation of past cancer among women with a first-degree family history.
+- Menopausal status and prior cancer (@fig-prop-history-menopaus): prevalence increases from pre- to post-menopausal groups.
+
+These patterns validate the dataset’s internal consistency and reflect well-documented biological mechanisms. They show that several predictors follow monotonic, interpretable gradients, making them suitable for ordinal encoding and interaction testing. They also highlight that age, menopausal status, and BMI are not interchangeable but capture distinct physiological pathways relevant for risk assessment.
+
+**4. Temporal trends reinforce the distinction between biological traits and cumulative risk**
+
+@fig-temporal-trend shows that breast density remains remarkably stable across 2005–2017, whereas prior cancer rises steadily over time.
+
+The stability of breast density indicates it behaves as a population-level biological attribute rather than a changing environmental phenomenon. Conversely, the rise in prior cancer reflects improving survival, population aging, and cumulative incidence, rather than shifts in risk factors. These temporal dynamics justify treating calendar year as a contextual descriptor rather than a substantive predictor in modelling.
+
+**5. Correlation structure confirms no problematic multicollinearity and validates biological expectations**
+
+The correlation matrix (@fig-heatmap) shows:
+
+- A strong positive correlation between age and menopausal status
+- Negative correlations between breast density and both age and BMI
+- Modest positive correlations between age/menopause and prior cancer;
+- Near-zero correlations for family history with most variables.
+
+These correlations reinforce the credibility of the dataset and confirm that predictors capture distinct information, reducing concerns about multicollinearity.
+
+
+**Overall Implications for the Modelling Strategy**
+
+Taken together, the EDA results indicate that:
+
+- Breast density should be modeled with strong attention to age and BMI effects.
+- Prior breast cancer requires techniques robust to imbalance *(e.g., penalization, sampling strategies, or exact logistic methods)*.
+- No predictors show redundancy, supporting the planned multivariable specification.
+
+These empirical insights justify modelling the two outcomes separately and confirm the relevance of including age, BMI, menopausal status, and family history as core predictors in the upcoming statistical analysis and ensure that model development rests on biologically plausible, statistically sound foundations. 
+
+## 4. Analysis
+
+The analytical component of the project seeks to move beyond descriptive observations and to **quantify the independent contribution** of demographic, hormonal, and anthropometric factors to the two critical outcomes. 
+
+### 4.1. Selected Statistical Methods
+
+To investigate the determinants of high breast density (BI-RADS 3–4) and prior breast cancer history, we employ **multivariate logistic regression**.
+
+> Multivariate logistic regression is a well suited method for binary outcomes that supports the inclusion of multiple categorical and ordinal predictors and yields interpretable odds ratios, which provide interpretable effect estimates and directly inform clinical or risk-stratification decisions.
+
+Two separate models are estimated: 
+
+- **Model A:** Probability of having high breast density
+- **Model B:** Probability of having a prior breast cancer diagnosis
+
+
+### 4.2. Rationale for Method Choice
+
+The choice of logistic regression is guided by insights from the exploratory data analysis:
+
+- The EDA reveals **strong univariate gradients**, such as:
+    - The steady decrease of breast density with age and BMI.
+    - The higher prevalence of prior breast cancer among post-menopausal and surgically menopausal women.
+- These patterns require **multivariable adjustment** to determine whether associations persist when controlling for correlated patient characteristics.
+
+Moreover: 
+
+- All predictors (age groups, BMI groups, menopausal status, reproductive factors, family history) are **categorical or ordinal**, which logistic regression handles naturally after appropriate one-hot encoding.
+- Correlation analysis indicated **low multicollinearity**, supporting the stability of coefficient estimation. However, as expected, a strong correlation was observed between age and menopausal status, reflecting their natural biological relationship. This implies that coefficients associated with menopause may partly reflect residual age effects. Therefore, menopause-related estimates are interpreted with caution and framed as adjusted associations rather than causal effects.
+- For Model B, the pronounced class imbalance motivates the use of **imbalance-robust metrics** and a comparison with **SMOTE**. Importantly, SMOTE is treated strictly as a modelling tool to improve classification sensitivity, and its implications for interpretability are explicitly considered in the discussion.
+
+Given these conditions, logistic regression represents a robust, transparent, and theoretically grounded modelling strategy for both outcomes.
+
+### 4.3. High breast density (Model A)
+
+#### 4.3.1 Model Specification
+
+Model A estimates the probability of presenting high breast density (BI-RADS 3–4) using a multivariable logistic regression framework. The dependent variable equals 1 for mammograms classified as BI-RADS 3–4 and 0 otherwise. The predictors of the model are: 
+
+- Age *(age_group_5_years)*
+- BMI *(bmi_group)*
+- Menopausal status *(menopaus_status)*
+- Age at first birth *(age_first_birth)*
+- Family history of breast cancer *(first_degree_hx)*
+
+#### 4.3.2. Results and Interpretation
+
+@tbl-model-a determines whether younger age, lower BMI, reproductive history, or menopausal status remain significant predictors after adjusting for one another.
+
+```{python}
+#| label: tbl-model-a
+#| tbl-cap: "Model A - Logistic Regression for High Breast Density"
+
+import statsmodels.formula.api as smf
+
+df_modelA = df_cleaned.copy()
+
+# Recoding of the dependent variable: BIRADS_high = 1 if BI-RADS 3–4
+df_modelA["BIRADS_high"] = df_modelA["BIRADS_breast_density"].isin(
+    ["heterogeneously dense", "extremely dense"]
+).astype(int)
+
+# Logit model with grouped and categorical variables
+formula_A = """
+BIRADS_high ~
+    age_group_5_years +
+    bmi_group +
+    menopaus +
+    age_first_birth +
+    age_menarche +
+    first_degree_hx"""
+
+modelA = smf.logit(formula_A, data=df_modelA).fit(disp=False)
+
+params = modelA.params
+conf = modelA.conf_int()
+pvals = modelA.pvalues
+
+summary_A = pd.DataFrame({
+    "Coef.": params,
+    "OR": np.exp(params),
+    "IC 2.5%": np.exp(conf[0]),
+    "IC 97.5%": np.exp(conf[1]),
+    "p-value": pvals
+}).round(3)
+
+summary_A
+```
+
+**Age:**
+
+The model shows that age is **by far the strongest determinant** of breast density, with odds ratios decreasing across older age groups. Additionaly, the coefficients for all age groups above 30 show a **progressively stronger negative association**. For instance:
+
+- Ages 30-34: -0.240
+- Ages 40-44: -0.805
+- Ages 55-59: -1.421
+- Ages 80-84: -1.915
+
+Additionally, the odds ratios decrease steeply at older ages. 
+
+These results reflect a **sharp and biologically consistent decrease in breast density with age**, indicating a monotonic decline in the likelihood of having BI-RADS 3-4 density across the lifespan. This result is consistent with established clinical evidence, which describes progressive glandular atrophy and fat replacement with advancing age, leading to lower mammographic density (@Lukasiewicz2021; @Obeagu2024).
+
+**BMI:**
+
+Conversely, BMI appears **inversely associated with density**:
+
+- –0.464 for overweight women (25–29.99)
+- –0.864 for obese women (30–34.99)
+- –1.333 for women with morbid obesity (≥35).
+
+This indicates that overweight and obese women have substantially lower odds of presenting BI-RADS 3–4 density than women with normal BMI.
+
+This aligns with the established negative correlation between adiposity and density: higher BMI increases breast fat proportion, reducing radiographic opacity. The previously mentioned literature review also reports this mechanism as a recognized risk-modifying factor.
+
+**Menopausal Status:**
+
+The effect of menopausal status is more modest: pre-menopausal women show higher odds of high density (coef = +0.175) compared to post-menopausal women. This is consistent with hormonally active glandular tissue. Howewer, this effect should be interpreted cautiously: given the strong correlation between age and menopausal status, menopause likely captures residual hormonal and physiological variation beyond chronological age, rather than representing an independent causal effect. The persistence of a menopause-related association nonetheless supports the biological relevance of hormonal transitions in shaping breast tissue composition.
+
+**Reproductive Factor and Family History:**
+
+Age at first birth and first-degree family history have significant but comparatively weaker effects. While some categories reach statistical significance, estimated odds ratios are close to unity, suggesting limited practical relevance. These findings are consistent with the EDA, which indicated that breast density is primarily driven by age- and hormone-related factors rather than reproductive history.
+
+
+
+##### **<u>Model Performance and Sensitivity to Class Imbalance</u>**
+
+**F1_scores and class-specific behaviour**
+
+From a predictive-performance perspective, Model A achieves an **F1-macro score of 0.626** (@tbl-f1-a), indicating solid and relatively stable performance across both classes in a dataset that is already well balanced (≈ 51% vs 49%). The **F1 score of 0.614 for the high-density class (class 1)** further suggests that the model is moderately effective at identifying women with BI-RADS 3–4 density.
+
+Because the outcome distribution is balanced, the F1 score here primarily reflects **the intrinsic discriminative power of the predictors rather than class imbalance effects**. The level of performance indicates that the included variables carry sufficient predictive signal, although some limitations remain in sensitivity and boundary classification
+
+The alignment between model coefficients and F1-based predictive accuracy **reinforces the conclusion that age and BMI form the dominant predictive axis**, while menopausal and reproductive factors provide additional, but comparatively smaller, contributions
+
+```{python}
+#| label: tbl-f1-a
+#| tbl-cap: "F1 Scores (Model A)"
+
+from sklearn.metrics import (
+    confusion_matrix, classification_report,
+    roc_curve, roc_auc_score, f1_score, balanced_accuracy_score
+)
+
+# --- 1. Retrieve true labels and model predictions ---
+y_true_A = df_modelA["BIRADS_high"].astype(int)
+
+# Predicted probabilities
+y_pred_prob_A = modelA.predict()
+
+# Predicted class using a 0.5 threshold
+y_pred_A = (y_pred_prob_A > 0.5).astype(int)
+
+# --- 2. F1 scores ---
+f1_macro_A = f1_score(y_true_A, y_pred_A, average='macro')
+f1_weighted_A = f1_score(y_true_A, y_pred_A, average='weighted')
+f1_class1_A = f1_score(y_true_A, y_pred_A, average='binary')
+
+f1_table_A = pd.DataFrame({
+    "Metric": ["F1 Macro", "F1 Weighted", "F1 Class 1"],
+    "Score": [
+        round(f1_macro_A, 3),
+        round(f1_weighted_A, 3),
+        round(f1_class1_A, 3)
+    ]
+})
+f1_table_A
+```
+
+
+**Confusion matrix interpretation**
+
+The **confusion matrix** (@fig-confusion-a) shows that the model correctly identifies a large number of both low-density (113,201) and high-density cases (102,768). However, it also produces a substantial number of false positives (62,135) and false negatives (66,960), indicating that classification remains challenging. These misclassifications are expected given that breast density is influenced by factors not available in the dataset (e.g., hormonal levels, genetic predispositions).
+
+```{python}
+#| label: fig-confusion-a
+#| fig-cap: "Confusion Matrix - Model A (High Breast Density)"
+
+# --- 3. Confusion matrix ---
+cm_A = confusion_matrix(y_true_A, y_pred_A)
+
+plt.figure(figsize=(6,5))
+sns.heatmap(cm_A, annot=True, fmt="d", cmap="Blues")
+plt.title("Confusion Matrix — Model A (High Breast Density)")
+plt.xlabel("Predicted")
+plt.ylabel("True")
+plt.show()
+```
+
+**Balanced accuracy and ROC-AUC**
+
+The **AUC (@fig-roc-a) of 0.674 confirms moderate discriminative ability:** the model performs significantly better than random classification but remains far from a strong predictive model. This is consistent with the **multifactorial nature of breast density**, where demographic and reproductive variables explain only part of the variability.
+
+```{python}
+# --- 4. Balanced Accuracy ---
+bal_acc_A = balanced_accuracy_score(y_true_A, y_pred_A)
+print("Balanced Accuracy:", round(bal_acc_A, 4))
+```
+
+```{python}
+#| label: fig-roc-a
+#| fig-cap: "ROC Curve - Model A (High Breast Density)"
+
+# --- 5. ROC curve and AUC ---
+fpr, tpr, _ = roc_curve(y_true_A, y_pred_prob_A)
+auc_A = roc_auc_score(y_true_A, y_pred_prob_A)
+
+plt.figure(figsize=(7,6))
+plt.plot(fpr, tpr, label=f"AUC = {auc_A:.3f}")
+plt.plot([0,1], [0,1], linestyle="--", color="gray")
+plt.xlabel("False Positive Rate")
+plt.ylabel("True Positive Rate")
+plt.title("ROC Curve — Model A (High Breast Density)")
+plt.legend()
+plt.grid(alpha=0.3)
+plt.show()
+```
+
+
+Overall, **Model A validates the strong age-BMI axis of breast density**, reinforcing the fact that these factors remain dominant even after multivariable control.
+
+### 4.4. Prior breast cancer history (Model B)
+
+#### 4.4.1 Model Specification
+
+Model B examines the determinants of prior breast cancer history, defined as a binary indicator equal to 1 if a woman reports a previous breast cancer diagnosis and 0 otherwise. The same set of variables than model A was used with one additional predictor : age at menarche (age_menarche).
+
+Prior breast cancer history is rare in our sample (~6% of observations), creating a pronounced class imbalance. To address this challenge, we complement standard accuracy with **performance metrics adapted to imbalanced outcomes** (balanced accuracy, F1-score, ROC-AUC) and we evaluate an approach using **SMOTE** to improve minority-class detection.
+
+Importantly, this outcome reflects accumulated disease history rather than incidence risk. As such, associations must be interpreted in the context of cumulative exposure over the life course rather than short-term risk.
+
+#### 4.4.2. Results and Interpretation
+
+Model B (@tbl-model-b) assesses whether the patterns observed in the EDA, particularly the influence of menopausal status and family history, hold in an adjusted framework and evaluates model sensitivity under class imbalance.
+
+```{python}
+#| label: tbl-model-b
+#| tbl-cap: "Model B - Logistic Regression for Prior Breast Cancer"
+
+from imblearn.over_sampling import SMOTE
+import statsmodels.api as sm
+
+# Dependent variable
+# Keep a copy of the ground truth before SMOTE
+
+y = df_cleaned["breast_cancer_history"].astype(str).str.lower().map({
+    "yes": 1,
+    "no": 0
+}).fillna(0).astype(int)
+
+# Keep a copy of the ground truth before SMOTE
+y_orig = y.copy()
+
+# Explanatory variables
+predictors_B = [
+    "age_group_5_years",
+    "bmi_group",
+    "menopaus",
+    "first_degree_hx",
+    "age_first_birth",
+    "age_menarche"     
+]
+
+X = pd.get_dummies(df_cleaned[predictors_B], drop_first=True).astype(float)
+
+# --- SMOTE to balance classes ---
+smote = SMOTE(random_state=42)
+X_res, y_res = smote.fit_resample(X, y)
+
+# Add constant
+X_res = sm.add_constant(X_res)
+
+# Fit the logit model
+modelB = sm.Logit(y_res, X_res).fit(disp=False)
+
+# Construct final table
+paramsB = modelB.params
+confB = modelB.conf_int()
+pvalsB = modelB.pvalues
+
+summary_B = pd.DataFrame({
+    "Coef.": paramsB,
+    "OR": np.exp(paramsB),
+    "IC 2.5%": np.exp(confB[0]),
+    "IC 97.5%": np.exp(confB[1]),
+    "p-value": pvalsB
+}).round(3)
+
+summary_B
+```
+
+**Age:**
+
+The results indicate that age is **again the dominant predictor**, but with a different directional pattern compared with model A. Coefficient and odds ratios increase sharply across older age groups, reflecting the cumulative nature of cancer diagnosis over time:
+
+- Ages 40-44: +0.2038
+- Ages 50-54: +0.9167
+- Ages 70-74: +1.8142
+- Ages 85+: +2.1465
+
+This association does not imply increasing short-term risk but rather captures the **accumulation of diagnosed cases as women age** and remain under long-term screening surveillance. The result is consistent with epidemiological data stating that breast cancer incidence rises with aging due to cumulative genetic instability and prolonged hormonal exposure (@Obeagu2024).
+
+**BMI:**
+
+BMI again shows negative associations, though weaker: 
+
+- –0.0712 for overweight women (25–29.99)
+- –0.1436 for obese women (30-34.99)
+- –0.2393 for women with morbid obesity (35+)
+
+This aligns with the complex and sometimes paradoxical role of adiposity, which raises cancer risk in postmenopausal women but does not necessarily predict history in cross-sectional datasets.
+
+**Menauposal Status:**
+
+Menopausal status exhibits **strong negative effects**: surgical menopause (coef = –0.4829) has lowers odds of prior cancer, possibly reflecting preventative oophorectomy in high-risk groups or shifting hormonal exposures.
+
+**Reproductive Factors and Family History:**
+
+Family history, although epidemiologically important, shows a surprisingly small negative coefficient (–0.1984). This weaker-than-expected association suggests that the model may be sensitive to class imbalance, sparsity of positive cases, or noise in self-reported family history. 
+
+> SMOTE-based oversampling improves sensitivity but may affect the stability of low-signal predictors.
+
+Reproductive factors exhibit small or statistically uncertain effects. While age at menarche and age at first birth are relevant risk factors in incidence-focused studies, their contribution to explaining prevalent cancer history appears limited in this cross-sectional setting.
+
+
+##### **<u>Model Performance and Sensitivity to Class Imbalance</u>**
+
+To complement the coefficient-based interpretation, we evaluated the predictive performance of Model B (prior breast cancer history) using multiple metrics adapted to imbalanced classification: **F1-scores, balanced accuracy, ROC–AUC, and the confusion matrix**.
+
+**F1-scores and class-specific behaviour**
+
+The model achieves a **macro F1-score of 0.536**, indicating moderate overall performance when averaging across classes. For the positive class (history = 1), it remains comparatively low (0.35), reflecting the **difficulty of detecting minority cases** even after SMOTE oversampling.
+
+This imbalance in performance aligns with clinical expectations: prior breast cancer is a rare event (≈ 6% in the original dataset), and demographic predictors alone cannot fully capture its biological complexity.
+
+```{python}
+#| label: tbl-f1-b
+#| tbl-cap: "F1 Scores - Model B"
+
+# --- 1. Predictions on ORIGINAL data (no SMOTE applied)
+# Recreate X_orig properly
+X_orig = pd.get_dummies(df_cleaned[predictors_B], drop_first=True).astype(float)
+X_orig = sm.add_constant(X_orig)
+
+# Column alignment (important if SMOTE created additional columns)
+X_orig = X_orig.reindex(columns=X_res.columns, fill_value=0)
+
+# Predictions
+y_pred_prob = modelB.predict(X_orig)
+y_pred_class = (y_pred_prob > 0.5).astype(int)
+
+# --- 2. F1 score table
+f1_macro = f1_score(y_orig, y_pred_class, average="macro")
+f1_weighted = f1_score(y_orig, y_pred_class, average="weighted")
+f1_class1 = f1_score(y_orig, y_pred_class, pos_label=1)
+
+f1_table_B = pd.DataFrame({
+    "Metric": ["F1 Macro", "F1 Weighted", "F1 Class 1"],
+    "Score": [
+        round(f1_macro, 3),
+        round(f1_weighted, 3),
+        round(f1_class1, 3)
+    ]
+})
+f1_table_B
+```
+
+**Confusion matrix interpretation**
+
+The confusion matrix reveals complementary insights into classification behaviour : 
+
+- **Sensitivity for class 1** *(=0.69; (@fig-roc-b))* shows that the model correctly identifies a majority of individuals with prior breast cancer.
+- **Specificity is lower**, as indicated by the large number of false positives (118,491)
+
+This indicates that the model tends to “over-call” prior cancer after balancing the dataset, which is typical for SMOTE-based approaches. Despite this trade-off, the improvement in sensitivity is valuable from a medical screening perspective, where missing true cases (false negatives) carries a higher cost.
+
+```{python}
+#| label: fig-confusion-b
+#| fig-cap: "Confusion Matrix - Model B (SMOTE)"
+
+# --- 3. Confusion matrix
+cm = confusion_matrix(y_orig, y_pred_class)
+
+plt.figure(figsize=(6,5))
+sns.heatmap(cm, annot=True, fmt="d", cmap="Blues")
+plt.title("Confusion Matrix — Model B (SMOTE)")
+plt.xlabel("Predicted")
+plt.ylabel("True")
+plt.show()
+```
+
+**Balanced accuracy and ROC-AUC**
+
+Balanced accucary improves to 0.643, confirming that the model performs substantially better than random guessing, even under artificially balanced training conditions.
+
+Moreover, the model reaches an **AUC of 0.684** indicating moderate discriminative ability.  Although not high, this is consistent with epidemiological literature showing that demographic and basic reproductive factors alone only partially explain variability in breast cancer risk. (@Khan23)
+
+```{python}
+# --- 4. Balanced accuracy
+print("Balanced Accuracy :", round(balanced_accuracy_score(y_orig, y_pred_class), 3))
+
+y_pred_prob = modelB.predict(X_res)
+y_pred_class = (y_pred_prob > 0.5).astype(int)
+
+# ---- 5. AUC ----
+auc_val = roc_auc_score(y_res, y_pred_prob)
+```
+
+```{python}
+#| label: fig-roc-b
+#| fig-cap: "Roc Curve - Model B"
+
+# ---- 6. ROC Curve ----
+fpr, tpr, _ = roc_curve(y_res, y_pred_prob)
+plt.figure(figsize=(7,6))
+plt.plot(fpr, tpr, label=f"AUC = {auc_val:.3f}")
+plt.plot([0,1], [0,1], "--", color="gray")
+plt.xlabel("False Positive Rate")
+plt.ylabel("True Positive Rate")
+plt.title("ROC Curve — Model B")
+plt.legend()
+plt.grid(alpha=0.3)
+plt.show()
+```
+
+
+### 4.5. Key takeaways from the analysis
+
+The modelling phase translates descriptive associations into statistically validated insights, enabling a rigorous understanding of 
+Overall, the modelling phase confirms that several of the strongest visual patterns identified in the EDA persist after multivariable adjustment—most consistently for **age and BMI**, across both outcomes. Additionally, it provides a **statistical foundation** for constructing risk profiles and interpreting clinical determinants of breast density and breast cancer history, and identifies **magnitude and direction of each predictor's effect** through odd ratios. Thus, the modelling phase enable a rigorous understanding of the factors shaping breast cancer risk and mammographic patterns in the population.
+
+**Model A (High breast density):** Estimated odds ratios indicate a clear age gradient, with substantially lower odds of BI-RADS 3–4 density at older ages, and an inverse association with BMI, consistent with the descriptive density patterns observed earlier. Model A demonstrates **moderate discrimination** as reflected by ROC-AUC. Importantly, the multivariate framework confirms that the strong age and BMI gradients observed in the EDA are not driven by confounding with menopausal or reproductive factors, but persist as independent associations after joint adjustment.
+
+**Model B (Prior breast cancer history):** Even after SMOTE, predictive performance remains **modest** (AUC ≈ 0.68), which is expected given that prior breast cancer is a rare outcome (~6%) and is influenced by risk drivers not captured in our feature set (e.g., genetics, detailed clinical history, treatment trajectories, and environmental exposures). In this setting, SMOTE can improve sensitivity to minority cases but may also increase false positives, highlighting the difficulty of rare-event prediction using only demographic and reproductive variables.
+
+Taken together, these results support logistic regression as a strong choice for **transparent inference and effect-size reporting** in our project context, while also clarifying the limits of purely predictor-based **risk classification** for complex, multifactorial outcomes. 
+
+## 5. Conclusions
+
+After defining the study objectives and preparing the dataset through systematic cleaning, harmonization, and encoding, the exploratory analysis revealed clear demographic, hormonal, and reproductive patterns shaping both breast density and prior breast cancer history. These patterns aligned closely with established epidemiological knowledge, particularly regarding age, BMI, menopausal status, and reproductive history.
+
+**First research question : What is the prevalence of high breast density and prior breast cancer history in the study population ?**
+
+The analysis estimates that high breast density affects approximately half of the screened population,whereas prior breast cancer history is observed in a much smaller share (~6%). This large prevalence gap is substantively important: high breast density represents a common characteristic relevant for screening stratification, while prior breast cancer history is a relatively rare outcome. From a modelling standpoint, the low base rate of prior breast cancer directly motivated the use of imbalance-aware performance metrics and the evaluation of SMOTE to improve minority-class detection in Model B.
+
+**Second research question : How do demographic, clinical, and reproductive characteristics influence breast density levels ?**
+
+The exploratory analysis and Model A provide a clear answer to this question: breast density is primarily driven by age and BMI, with a pronounced decline in density observed among older women and those with higher BMI. Menopausal status further stratifies this pattern, with post-menopausal women exhibiting substantially lower breast density than pre-menopausal women, even after accounting for age. Reproductive characteristics, such as age at first birth, show more modest but consistent associations, indicating secondary influences rather than primary drivers. Importantly, these effects remain statistically significant in the multivariable model, demonstrating that the observed relationships are not explained by confounding but reflect robust, biologically grounded associations.
+
+**Third research question: Which factors show the strongest association with a previous breast cancer diagnosis, and how do they interact ?**
+
+Model B indicates that age and menopausal status are the strongest predictors of a previous breast cancer diagnosis, reflecting the cumulative nature of cancer risk over the life course as well as screening-related selection effects. In contrast, first-degree family history—typically a major risk factor—exhibits a weaker and even negative adjusted association in the multivariable model. This result should not be interpreted as an epidemiological reversal. Rather, it reflects methodological and structural constraints of the dataset.
+
+Specifically, the strong correlation between age and personal cancer history, combined with the substantial reduction of the analytic sample (from over 6 million to approximately 345,000 observations) and the application of SMOTE to address outcome imbalance, likely redistributed explanatory variance across predictors. As a result, once the highly dominant effects of age and menopausal status were controlled for, the residual signal attributed to family history became unstable and sensitive to data structure. Consequently, while Model B robustly identifies the primary determinants of prior breast cancer history, the estimated effects of secondary predictors must be interpreted with caution, as they may reflect artefacts of aggregation, selection, and rebalancing rather than underlying etiological mechanisms.
+
+
+> Together, the EDA and multivariable modelling phases offer a robust analytic framework for understanding the prevalence and determinants of both breast density and prior breast cancer history. Although the models do not capture all dimensions of breast cancer risk, particularly socioeconomic and behavioral factors absent from the dataset, they provide a solid statistical foundation for interpreting the observed relationships and for advancing toward final analytical and clinical insights.
+
+Taken together, these results show that while the modelling framework is well suited to identifying the dominant, population-level drivers of breast cancer history, it also highlights how data structure and outcome rarity constrain the interpretability of secondary risk factors in observational settings.
+
+### 5.1. Limitations
+
+Despite the strengths of the analytical approach, several important limitations must be acknowledged:
+
+1. **Selection bias from dataset reduction (6M -> 345k)**
+
+The original dataset contained over six million observations, but preprocessing steps reduced the analytic sample to approximately 345,000. This substantial reduction may have introduced selection bias, disproportionately altering the distribution of key variables such as family history or reproductive factors. The unexpected behavior of certain coefficients most notably the weak or negative effect of first-degree family history may be partly explained by this distortion.
+
+2. **Structural imbalances in the dataset**
+
+The dataset exhibited meaningful structural characteristics that may limit generalizability, including:
+
+- Racial imbalance
+- Unequal representation across age groups
+- Clinical selection effects tied to screening patterns
+
+These patterns reflect the fact that the dataset originates from breast imaging clinics rather than a population-based sample.
+
+3. **Impact of SMOTE on epidemiological validity**
+
+To address the severe class imbalance in Model B (prior breast cancer history), SMOTE oversampling was applied. While appropriate from a machine learning standpoint, SMOTE can generate synthetic observations that dilute or obscure subtle clinical signals. This likely contributed to the instability of coefficients for lower-prevalence predictors.
+
+4. **Socioeconomic and behavioral confounding**
+
+Breast cancer risk is strongly influenced by non-biological factors that were not present in the dataset, such as:
+
+- Access to screening
+- Lifestyle variables (alcohol use, physical activity)
+- Environmental exposures
+
+Because breast imaging in the U.S. is costly and strongly insurance-dependent, the dataset likely **overrepresents higher-income women** who undergo routine screening. This limits the applicability of the findings to the general U.S. population.
+
+5. **Model scope and prediction limitations**
+
+Model B displayed modest discriminatory performance (AUC ~0.68), suggesting that the available predictors explain only part of the variance in prior breast cancer history. This reinforces the influence of unmeasured confounders and the inherent limitations of the dataset.
+
+
+Despite these limitations, the study demonstrates the value of combining large-scale exploratory analysis with interpretable statistical models to uncover robust population-level patterns in breast cancer risk, and provides a strong analytical foundation for future work integrating richer clinical, genetic, and behavioral data.
+
+
+## Appendix
+
+### Visualization of the distribution of all the variables of the dataset
+
+```{python}
+#| label: Dataset-distributions
+#| fig-cap: 'Distributions of the variables in the dataset'
+#| out-width: 80%
+#| fig-align: center
+
+n_cols = 2
+n_rows = (len(cat_cols) + n_cols - 1) // n_cols
+
+fig, axes = plt.subplots(n_rows, n_cols, figsize=(8, 4*n_rows))
+axes = axes.flatten()
+
+for i, col in enumerate(cat_cols):
+    sns.countplot(data=df_EDA, x=col, ax=axes[i], order=df_cleaned_agg[col].value_counts().index)
+    axes[i].set_title(f'Distribution of {col}', fontsize=10, fontweight='bold')
+    axes[i].tick_params(axis='x', rotation=90)
+
+# Delete empty axes
+for j in range(i+1, len(axes)):
+    fig.delaxes(axes[j])
+
+plt.tight_layout()
+plt.show()
+
+```
+
+
+
