@@ -21,7 +21,6 @@ format:
     toc-depth: 5
     toc-location: body
     theme: cosmo
-    page-layout: full
     code-fold: true
     self-contained : true
     code-summary: "Show code"
@@ -552,7 +551,7 @@ display(corr_focus)
 
 While the dataset is comprehensive and large-scale, several challenges limit the scope of the analysis : 
 
-- The most significant limitaion lies in its **aggregated structure**, which prevents patient-level investigation and reduces the granularity of possible analyses
+- The most significant limitation lies in its **aggregated structure**, which prevents patient-level investigation and reduces the granularity of possible analyses
 - Several variables contain **"unknown" labels or missing values**, which may affect statistical robustness.
 - Some combinations of demographic and clinical factors are rare, resuting in **uneven category representation**. This may lead to: 
     - Sparsity in specific subgroups
@@ -767,6 +766,7 @@ sns.barplot(
     y='BIRADS_high'
 )
 
+
 plt.title("Proportion of Women with High Breast Density by Age Group", fontsize=10, fontweight='bold')
 plt.ylabel("Proportion (0–1)")
 plt.xlabel("Age Group (5-year intervals)")
@@ -794,6 +794,8 @@ sns.barplot(
     x='first_degree_hx',
     y='prop_prior_cancer'
 )
+
+
 
 plt.title("Proportion of Women with Prior Breast Cancer by Family History Status", fontsize=10, fontweight='bold')
 plt.ylabel("Proportion (0–1)")
@@ -903,11 +905,11 @@ plt.show()
 
 Overall, the recoded correlation matrix: 
 
-- corroborates the patterns identified in earlier bivariate plots.
-- provides additonal support for modeling high breast density separately from prior cancer history.
-- confirms the absence of problematic multicollinearity among the selected predictors.
-- supports the biological plausibility of the observed relationships.
-- validates the methodological choice to include age, BMI, menopausal status, family history, and breast density as separate explanatory variables in the next stage of analysis.
+- Corroborates the patterns identified in earlier bivariate plots.
+- Provides additonal support for modeling high breast density separately from prior cancer history.
+- Confirms the absence of problematic multicollinearity among the selected predictors.
+- Supports the biological plausibility of the observed relationships.
+- Validates the methodological choice to include age, BMI, menopausal status, family history, and breast density as separate explanatory variables in the next stage of analysis.
 
 
 ### 3.6. Key Findings from EDA
@@ -1095,7 +1097,7 @@ Age at first birth and first-degree family history have significant but comparat
 
 
 
-##### **<u>Model Performance and Sensitivity to Class Imbalance</u>**
+##### <u>Model Performance and Sensitivity to Class Imbalance</u>
 
 **F1_scores and class-specific behaviour**
 
@@ -1295,7 +1297,7 @@ Family history, although epidemiologically important, shows a surprisingly small
 Reproductive factors exhibit small or statistically uncertain effects. While age at menarche and age at first birth are relevant risk factors in incidence-focused studies, their contribution to explaining prevalent cancer history appears limited in this cross-sectional setting.
 
 
-##### **<u>Model Performance and Sensitivity to Class Imbalance</u>**
+##### <u>Model Performance and Sensitivity to Class Imbalance</u>
 
 To complement the coefficient-based interpretation, we evaluated the predictive performance of Model B (prior breast cancer history) using multiple metrics adapted to imbalanced classification: **F1-scores, balanced accuracy, ROC–AUC, and the confusion matrix**.
 
@@ -1413,7 +1415,7 @@ After defining the study objectives and preparing the dataset through systematic
 
 **First research question : What is the prevalence of high breast density and prior breast cancer history in the study population ?**
 
-The analysis estimates that high breast density affects approximately half of the screened population,whereas prior breast cancer history is observed in a much smaller share (~6%). This large prevalence gap is substantively important: high breast density represents a common characteristic relevant for screening stratification, while prior breast cancer history is a relatively rare outcome. From a modelling standpoint, the low base rate of prior breast cancer directly motivated the use of imbalance-aware performance metrics and the evaluation of SMOTE to improve minority-class detection in Model B.
+The analysis estimates that high breast density affects approximately half of the screened population, whereas prior breast cancer history is observed in a much smaller share (~6%). This large prevalence gap is substantively important: high breast density represents a common characteristic relevant for screening stratification, while prior breast cancer history is a relatively rare outcome. From a modelling standpoint, the low base rate of prior breast cancer directly motivated the use of imbalance-aware performance metrics and the evaluation of SMOTE to improve minority-class detection in Model B.
 
 **Second research question : How do demographic, clinical, and reproductive characteristics influence breast density levels ?**
 
@@ -1421,7 +1423,7 @@ The exploratory analysis and Model A provide a clear answer to this question: br
 
 **Third research question: Which factors show the strongest association with a previous breast cancer diagnosis, and how do they interact ?**
 
-Model B indicates that age and menopausal status are the strongest predictors of a previous breast cancer diagnosis, reflecting the cumulative nature of cancer risk over the life course as well as screening-related selection effects. In contrast, first-degree family history—typically a major risk factor—exhibits a weaker and even negative adjusted association in the multivariable model. This result should not be interpreted as an epidemiological reversal. Rather, it reflects methodological and structural constraints of the dataset.
+Model B indicates that age and menopausal status are the strongest predictors of a previous breast cancer diagnosis, reflecting the cumulative nature of cancer risk over the life course as well as screening-related selection effects. In contrast, first-degree family history, typically a major risk factor, exhibits a weaker and even negative adjusted association in the multivariable model. This result should not be interpreted as an epidemiological reversal. Rather, it reflects methodological and structural constraints of the dataset.
 
 Specifically, the strong correlation between age and personal cancer history, combined with the substantial reduction of the analytic sample (from over 6 million to approximately 345,000 observations) and the application of SMOTE to address outcome imbalance, likely redistributed explanatory variance across predictors. As a result, once the highly dominant effects of age and menopausal status were controlled for, the residual signal attributed to family history became unstable and sensitive to data structure. Consequently, while Model B robustly identifies the primary determinants of prior breast cancer history, the estimated effects of secondary predictors must be interpreted with caution, as they may reflect artefacts of aggregation, selection, and rebalancing rather than underlying etiological mechanisms.
 
